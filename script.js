@@ -79,6 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const statusClass = `status-${status.toLowerCase()}`;
                 const statusHTML = `<span class="status-badge ${statusClass}">${status}</span>`;
 
+				const entryPrice = parseFloat(entry.entry);
+				const takeProfitPrice = parseFloat(entry.takeProfit);
+				const stopLossPrice = parseFloat(entry.stopLoss);
+
+				const formattedEntry = !isNaN(entryPrice) ? entryPrice.toLocaleString('id-ID') : entry.entry;
+                const formattedTP = !isNaN(takeProfitPrice) ? takeProfitPrice.toLocaleString('id-ID') : entry.takeProfit;
+                const formattedSL = !isNaN(stopLossPrice) ? stopLossPrice.toLocaleString('id-ID') : entry.stopLoss;
+
                 let profitCellHTML = 'N/A';
                 if (liveTickers && (status === 'Open' || status === 'Selesai')) {
                     const apiPair = entry.pair.toLowerCase().replace('idr', '_idr');
@@ -113,9 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${entry.pair}</td>
                     <td>${entry.duration}</td>
                     <td>${statusHTML}</td>
-                    <td>${entry.entry}</td>
-                    <td>${entry.takeProfit}</td>
-                    <td>${entry.stopLoss}</td>
+                    <td>${formattedEntry}</td>
+                    <td>${formattedTP}</td>
+                    <td>${formattedSL}</td>
                     <td>${entry.timeframe}</td>
                     <td>${profitCellHTML}</td>
                     <td>${actionHTML}</td>
