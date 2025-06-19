@@ -1,0 +1,11 @@
+[
+  {
+    "pair": "BTCIDR",
+    "entry": "1713000000",
+    "takeProfit": "1720000000",
+    "stopLoss": "1708000000",
+    "timeframe": "1H",
+    "duration": "Short",
+    "timestamp": "2025-06-19T10:36:09.149Z"
+  }
+]

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal Trading</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Jurnal Trading</h1>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <h2>Catat Order Baru</h2>
+                <form id="journalForm">
+                    <label for="pair">Pair</label>
+                    <input type="text" id="pair" name="pair" value="BTCIDR" required>
+
+                    <label for="entry">Harga Entry</label>
+                    <input type="number" id="entry" name="entry" step="any" required>
+
+                    <label for="takeProfit">Take Profit</label>
+                    <input type="number" id="takeProfit" name="takeProfit" step="any" required>
+
+                    <label for="stopLoss">Stop Loss</label>
+                    <input type="number" id="stopLoss" name="stopLoss" step="any" required>
+
+                    <label for="timeframe">Timeframe</label>
+                    <input type="text" id="timeframe" name="timeframe" value="1H" required>
+
+                    <label for="duration">Jenis Order</label>
+                    <select id="duration" name="duration" required>
+                        <option value="Long">Long</option>
+                        <option value="Short">Short</option>
+                    </select>
+
+                    <button type="submit">Catat Order</button>
+                </form>
+            </section>
+
+            <section class="table-section">
+                <h2>Riwayat Order</h2>
+                <div class="table-wrapper">
+                    <table id="journalTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Pair</th>
+                                <th>Jenis</th>
+                                <th>Entry</th>
+                                <th>Take Profit</th>
+                                <th>Stop Loss</th>
+                                <th>Timeframe</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Dibuat oleh Faris</p>
+            <p>
+                <a href="https://instagram.com/faris.a.y" target="_blank">Instagram</a> | 
+                <a href="https://threads.net/@faris.a.y" target="_blank">Threads</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
