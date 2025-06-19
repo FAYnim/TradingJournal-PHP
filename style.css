@@ -130,3 +130,40 @@ th {
 tbody tr:hover {
     background-color: #333;
 }
+
+/* ... (kode CSS yang sudah ada sebelumnya) ... */
+
+/* Gaya untuk Navigasi */
+nav {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+nav a {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--text-color);
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+nav a:hover {
+    background-color: var(--surface-color);
+}
+
+/* Gaya untuk link navigasi yang aktif */
+nav a.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Kelas untuk menyembunyikan halaman */
+.hidden {
+    display: none;
+}
