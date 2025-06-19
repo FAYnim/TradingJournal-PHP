@@ -48,30 +48,39 @@
                 </section>
             </div>
 
-            <!-- Halaman untuk melihat tabel riwayat (tampil pertama kali) -->
-            <div id="page-view-orders" class="page-content">
-                 <section class="table-section">
-                    <h2>Riwayat Order</h2>
-                    <div class="table-wrapper">
-                        <table id="journalTable">
-                            <thead>
-                                <tr>
-                                    <th>Timestamp</th>
-                                    <th>Pair</th>
-                                    <th>Jenis</th>
-                                    <th>Entry</th>
-                                    <th>Take Profit</th>
-                                    <th>Stop Loss</th>
-                                    <th>Timeframe</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Data akan diisi oleh JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            </div>
+		    <!-- Halaman untuk melihat tabel riwayat (tampil pertama kali) -->
+		    <div id="page-view-orders" class="page-content">
+		        <section class="table-section">
+		            
+		            <!-- ===== BAGIAN YANG DIUBAH MULAI DARI SINI ===== -->
+
+		            <div class="table-header">
+		                <h2>Riwayat Order</h2>
+		                <button id="refreshBtn">Refresh Harga</button>
+		            </div>
+
+		            <div class="table-wrapper">
+		                <table id="journalTable">
+		                    <thead>
+		                        <tr>
+		                            <th>Timestamp</th>
+		                            <th>Pair</th>
+		                            <th>Jenis</th>
+		                            <th>Entry</th>
+		                            <th>Take Profit</th>
+		                            <th>Stop Loss</th>
+		                            <th>Timeframe</th>
+		                            <th>Profit</th> <!-- <-- KOLOM BARU -->
+		                        </tr>
+		                    </thead>
+		                    <tbody id="tableBody">
+		                        <!-- Data akan diisi oleh JavaScript -->
+		                    </tbody>
+		                </table>
+		            </div>
+		            <!-- ===== BAGIAN YANG DIUBAH SELESAI DI SINI ===== -->
+		        </section>
+		    </div>
         </main>
 
         <footer>
