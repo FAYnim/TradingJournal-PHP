@@ -206,3 +206,40 @@ nav a.active {
     color: #f44336; /* Merah */
     font-weight: bold;
 }
+
+/* ... (kode CSS yang sudah ada sebelumnya) ... */
+
+/* Gaya untuk tombol aksi di dalam tabel */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.action-btn {
+    padding: 4px 8px;
+    font-size: 0.8em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-selesai { background-color: #2196F3; } /* Biru */
+.btn-selesai:hover { background-color: #1976D2; }
+
+.btn-batal { background-color: #f44336; } /* Merah */
+.btn-batal:hover { background-color: #d32f2f; }
+
+/* Gaya untuk label status */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #fff;
+    display: inline-block;
+}
+
+.status-open { background-color: #ff9800; } /* Oranye */
+.status-selesai { background-color: #4CAF50; } /* Hijau */
+.status-batal { background-color: #757575; } /* Abu-abu */
