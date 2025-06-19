@@ -65,8 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         profitCellHTML = `<span class="${colorClass}">${percentage.toFixed(2)}%</span>`;
                     }
                 }
+
+				const shortId = entry.id ? entry.id.split('-')[0] : 'Lama';
                 
                 row.innerHTML = `
+					<td>${shortId}</td>
                     <td>${formattedDate}</td>
                     <td>${entry.pair}</td>
                     <td>${entry.duration}</td>
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Gagal memuat data jurnal:', error);
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Gagal memuat data.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">Gagal memuat data.</td></tr>';
         }
         // Bagian "finally" kita hapus, karena status tombol sekarang diatur oleh countdown
     }

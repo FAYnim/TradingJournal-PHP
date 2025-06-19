@@ -2,6 +2,7 @@
 const http = require('http'); // Untuk membuat server
 const fs = require('fs');     // Untuk membaca dan menulis file
 const path = require('path'); // Untuk mengelola path file
+const crypto = require('crypto');
 
 const PORT = 3002;
 const DATA_FILE = path.join(__dirname, 'data.json');
@@ -67,6 +68,8 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             const newData = JSON.parse(body);
             newData.timestamp = new Date().toISOString(); // Tambahkan timestamp
+
+            newData.id = crypto.randomUUID();
 
             // Baca data lama
             fs.readFile(DATA_FILE, 'utf8', (err, data) => {
