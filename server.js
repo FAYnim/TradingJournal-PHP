@@ -1,23 +1,19 @@
-// === 1. MEMANGGIL SEMUA MODUL YANG DIBUTUHKAN ===
-// Ini adalah alat-alat bawaan NodeJS yang kita perlukan.
-const http = require('http');     // Untuk membuat server
-const fs = require('fs');         // Untuk membaca dan menulis file (seperti data.json)
-const path = require('path');     // Untuk mengelola lokasi file agar rapi
-const crypto = require('crypto'); // Untuk membuat ID unik (UUID)
+// Memanggil modul-modul bawaan NodeJS yang kita butuhkan
+const http = require('http'); // Untuk membuat server
+const fs = require('fs');     // Untuk mengelola file (baca/tulis)
+const path = require('path'); // Untuk mengelola path/lokasi file
+const crypto = require('crypto'); // Untuk membuat ID unik
 
+// Pengaturan dasar
+const PORT = 3000;
+const DATA_FILE = path.join(__dirname, 'data.json'); // Lokasi file data kita
 
-// === 2. PENGATURAN DASAR ===
-const PORT = 3000; // Server akan berjalan di port 3000
-const DATA_FILE = path.join(__dirname, 'data.json'); // Lokasi file database kita
-
-
-// === 3. MEMBUAT SERVER ===
-// Ini adalah "otak" dari aplikasi kita. Dia akan menunggu permintaan dari browser.
+// Membuat server utama
 const server = http.createServer((req, res) => {
 
-    // --- MENANGANI PERMINTAAN DARI BROWSER ---
+    // === MENANGANI PERMINTAAN GET (Minta Halaman/Data) ===
 
-    // Jika browser minta halaman utama (GET /)
+    // Jika browser minta halaman utama
     if (req.method === 'GET' && req.url === '/') {
         fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
             if (err) { res.writeHead(500); res.end('Error server.'); return; }
@@ -51,21 +47,25 @@ const server = http.createServer((req, res) => {
         });
     }
     
-    // Jika browser mengirim data order BARU (dari form)
+    // === MENANGANI PERMINTAAN POST (Kirim Data Baru/Perubahan) ===
+
+    // Endpoint untuk MENAMBAH order baru
     else if (req.method === 'POST' && req.url === '/api/data') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
         req.on('end', () => {
             const newData = JSON.parse(body);
-            // Tambahkan properti baru sebelum disimpan
-            newData.id = crypto.randomUUID();        // Buat ID unik
-            newData.timestamp = new Date().toISOString(); // Tambahkan waktu
-            newData.status = 'Open';                 // Tambahkan status default "Open"
+            
+            // Tambahkan properti baru ke data sebelum disimpan
+            newData.id = crypto.randomUUID();         // Buat ID unik
+            newData.timestamp = new Date().toISOString(); // Tambahkan waktu saat ini
+            newData.status = 'Open';                  // Beri status default "Open"
 
             fs.readFile(DATA_FILE, 'utf8', (err, data) => {
                 let allData = [];
                 if (!err && data) { allData = JSON.parse(data); }
-                allData.push(newData); // Tambahkan order baru ke daftar
+                allData.push(newData);
+                
                 fs.writeFile(DATA_FILE, JSON.stringify(allData, null, 2), (err) => {
                     if (err) { res.writeHead(500); res.end('Gagal menyimpan data.'); return; }
                     res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -75,27 +75,35 @@ const server = http.createServer((req, res) => {
         });
     }
     
-    // RUTE BARU: Jika browser minta untuk MENGUBAH STATUS order yang sudah ada
+    // Endpoint untuk MEMPERBARUI status order (Selesai/Batal)
     else if (req.method === 'POST' && req.url === '/api/update-status') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
         req.on('end', () => {
-            const { id, status } = JSON.parse(body); // Ambil ID dan status baru dari browser
+            // Ambil ID, status baru, dan profit final dari browser
+            const { id, status, final_profit } = JSON.parse(body);
 
             fs.readFile(DATA_FILE, 'utf8', (err, data) => {
                 if (err) { res.writeHead(500); res.end('Gagal membaca data.'); return; }
                 
                 let allData = JSON.parse(data);
                 
-                // Cari order berdasarkan ID, lalu perbarui statusnya
+                // Cari order berdasarkan ID dan perbarui datanya
                 const updatedData = allData.map(order => {
-                    if (order.id === id) { // Jika ID-nya cocok...
-                        return { ...order, status: status }; // ...buat salinan order & ubah statusnya
+                    if (order.id === id) {
+                        const updatedOrder = { ...order, status: status };
+                        
+                        // Jika ada data profit yang dikirim, simpan juga
+                        if (final_profit !== undefined && final_profit !== null) {
+                            updatedOrder.final_profit = final_profit;
+                        }
+                        
+                        return updatedOrder;
                     }
-                    return order; // Jika tidak, biarkan saja
+                    return order;
                 });
                 
-                // Tulis kembali seluruh data yang sudah diperbarui ke file
+                // Tulis kembali semua data yang sudah diperbarui ke file
                 fs.writeFile(DATA_FILE, JSON.stringify(updatedData, null, 2), (err) => {
                     if (err) { res.writeHead(500); res.end('Gagal menyimpan pembaruan.'); return; }
                     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -105,15 +113,14 @@ const server = http.createServer((req, res) => {
         });
     }
     
-    // Jika halaman tidak ditemukan
+    // Jika halaman/endpoint tidak ditemukan
     else {
         res.writeHead(404);
         res.end('Halaman tidak ditemukan');
     }
 });
 
-
-// === 4. MENJALANKAN SERVER ===
+// Menjalankan server
 server.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
     // Jika file data.json belum ada, buat file kosong agar tidak error

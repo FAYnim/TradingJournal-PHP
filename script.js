@@ -2,15 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === BAGIAN 1: MENGAMBIL SEMUA ELEMEN DARI HTML ===
     // Kita "pegang" semua elemen yang akan kita ubah-ubah menggunakan JavaScript.
-    // Termasuk elemen-elemen baru untuk halaman arsip.
     const journalForm = document.getElementById('journalForm');
     const tableBody = document.getElementById('tableBody');
-    const archiveTableBody = document.getElementById('archiveTableBody'); // Tabel untuk arsip
+    const archiveTableBody = document.getElementById('archiveTableBody');
     const navView = document.getElementById('nav-view');
-    const navArchive = document.getElementById('nav-archive'); // Navigasi untuk arsip
+    const navArchive = document.getElementById('nav-archive');
     const navAdd = document.getElementById('nav-add');
     const pageViewOrders = document.getElementById('page-view-orders');
-    const pageArchiveOrders = document.getElementById('page-archive-orders'); // Halaman untuk arsip
+    const pageArchiveOrders = document.getElementById('page-archive-orders');
     const pageAddOrder = document.getElementById('page-add-order');
     const refreshBtn = document.getElementById('refreshBtn');
 
@@ -47,16 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 
-    // Fungsi untuk mengirim pembaruan status ke server
-    async function updateOrderStatus(id, status) {
+    // Fungsi untuk mengirim pembaruan status ke server (sekarang membawa data profit)
+    async function updateOrderStatus(id, status, final_profit) {
         try {
             const response = await fetch('/api/update-status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, status })
+                body: JSON.stringify({ id, status, final_profit })
             });
             if (response.ok) {
-                loadJournalData(); // Jika sukses, muat ulang semua data
+                loadJournalData();
             } else {
                 alert('Gagal memperbarui status order.');
             }
@@ -65,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Fungsi untuk mengisi baris tabel (agar tidak menulis kode yang sama dua kali)
+    // Fungsi untuk mengisi baris tabel (sudah dimodifikasi untuk profit final)
     function populateTable(dataArray, targetTableBody, liveTickers) {
         dataArray.forEach(entry => {
             const row = document.createElement('tr');
@@ -74,9 +73,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const status = entry.status || 'Open';
             const statusClass = `status-${status.toLowerCase()}`;
             const statusHTML = `<span class="status-badge ${statusClass}">${status}</span>`;
-
+            
             let profitCellHTML = 'N/A';
-            if (status === 'Open' && liveTickers) {
+            let liveProfitPercentage = null; // Variabel untuk menyimpan profit live sementara
+
+            // Prioritas 1: Cek apakah ada profit final yang disimpan.
+            if (entry.final_profit !== undefined && entry.final_profit !== null) {
+                const savedProfit = parseFloat(entry.final_profit);
+                const colorClass = savedProfit >= 0 ? 'profit' : 'loss';
+                profitCellHTML = `<span class="${colorClass}">${savedProfit.toFixed(2)}%</span>`;
+            
+            // Prioritas 2: Jika tidak ada, baru hitung profit live untuk order 'Open'.
+            } else if (status === 'Open' && liveTickers) {
                 const apiPair = entry.pair.toLowerCase().replace('idr', '_idr');
                 const currentTicker = liveTickers[apiPair];
                 if (currentTicker) {
@@ -88,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         percentage = ((entryPrice - livePrice) / entryPrice) * 100;
                     }
+                    liveProfitPercentage = percentage; // Simpan nilai profit live untuk tombol
                     const colorClass = percentage >= 0 ? 'profit' : 'loss';
                     profitCellHTML = `<span class="${colorClass}">${percentage.toFixed(2)}%</span>`;
                 }
@@ -95,9 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let actionHTML = '';
             if (status === 'Open') {
+                // Sisipkan nilai profit live ke dalam 'data-profit' di tombol
                 actionHTML = `<div class="action-buttons">
-                    <button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai">Selesai</button>
-                    <button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal">Batal</button>
+                    <button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai" data-profit="${liveProfitPercentage}">Selesai</button>
+                    <button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal" data-profit="${liveProfitPercentage}">Batal</button>
                 </div>`;
             }
             
@@ -110,20 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadJournalData() {
         refreshBtn.textContent = 'Memuat...';
         try {
-            // Ambil semua data dari server dan Indodax
             const journalResponse = await fetch('/api/data');
             const allJournalData = await journalResponse.json();
             const liveTickers = await getAllTickers();
-
-            // Kosongkan kedua tabel sebelum diisi
+            
             tableBody.innerHTML = '';
             archiveTableBody.innerHTML = '';
             
-            // Siapkan dua "keranjang" untuk memisahkan data
             const activeOrders = [];
             const archivedOrders = [];
 
-            // Pisahkan setiap order ke keranjang yang sesuai
             allJournalData.forEach(order => {
                 if (order.status === 'Open') {
                     activeOrders.push(order);
@@ -132,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             
-            // Isi tabel aktif dan tabel arsip dengan data yang sudah dipisah
             populateTable(activeOrders.reverse(), tableBody, liveTickers);
             populateTable(archivedOrders.reverse(), archiveTableBody, null);
 
@@ -144,18 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === BAGIAN 4: FUNGSI NAVIGASI ===
-    // Mengatur halaman mana yang tampil dan mana yang sembunyi.
     function showPage(pageName) {
-        // Pertama, sembunyikan semua halaman
         pageViewOrders.classList.add('hidden');
         pageArchiveOrders.classList.add('hidden');
         pageAddOrder.classList.add('hidden');
-        // Hapus tanda aktif dari semua link navigasi
         navView.classList.remove('active');
         navArchive.classList.remove('active');
         navAdd.classList.remove('active');
 
-        // Lalu, tampilkan halaman yang dipilih dan beri tanda aktif
         if (pageName === 'view') {
             pageViewOrders.classList.remove('hidden');
             navView.classList.add('active');
@@ -178,14 +179,15 @@ document.addEventListener('DOMContentLoaded', () => {
         startRefreshCooldown();
     });
     
-    // Event listener untuk tombol Selesai/Batal di dalam tabel
+    // Event listener untuk tombol Selesai/Batal, sekarang mengirim profit
     tableBody.addEventListener('click', (e) => {
         if (e.target.matches('.action-btn')) {
             const id = e.target.dataset.id;
             const status = e.target.dataset.status;
+            const profit = e.target.dataset.profit; // Ambil data profit dari tombol
             if (id && status) {
                 if(status === 'Batal' && !confirm('Anda yakin ingin membatalkan order ini?')) return;
-                updateOrderStatus(id, status);
+                updateOrderStatus(id, status, profit); // Kirim profit ke fungsi update
             }
         }
     });
@@ -203,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 journalForm.reset();
                 await loadJournalData();
-                showPage('view'); // Setelah submit, kembali ke halaman riwayat aktif
+                showPage('view');
             } else {
                 alert('Gagal menyimpan data.');
             }
