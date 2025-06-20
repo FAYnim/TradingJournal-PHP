@@ -1,14 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // === 1. MENGAMBIL SEMUA ELEMEN HTML YANG DIBUTUHKAN ===
+
+    // === BAGIAN 1: MENGAMBIL SEMUA ELEMEN DARI HTML ===
+    // Kita "pegang" semua elemen yang akan kita ubah-ubah menggunakan JavaScript.
+    // Termasuk elemen-elemen baru untuk halaman arsip.
     const journalForm = document.getElementById('journalForm');
     const tableBody = document.getElementById('tableBody');
+    const archiveTableBody = document.getElementById('archiveTableBody'); // Tabel untuk arsip
     const navView = document.getElementById('nav-view');
+    const navArchive = document.getElementById('nav-archive'); // Navigasi untuk arsip
     const navAdd = document.getElementById('nav-add');
     const pageViewOrders = document.getElementById('page-view-orders');
+    const pageArchiveOrders = document.getElementById('page-archive-orders'); // Halaman untuk arsip
     const pageAddOrder = document.getElementById('page-add-order');
     const refreshBtn = document.getElementById('refreshBtn');
 
-    // === 2. FUNGSI-FUNGSI BANTU ===
+    // === BAGIAN 2: FUNGSI-FUNGSI BANTU ===
+    // Kumpulan fungsi kecil yang akan kita gunakan berulang kali.
 
     // Fungsi untuk mengambil data harga dari Indodax
     async function getAllTickers() {
@@ -20,12 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return data.tickers;
         } catch (error) {
             console.error('Error di getAllTickers:', error);
-            alert('Gagal mengambil data harga dari Indodax. Cek koneksi internet.');
+            alert('Gagal mengambil data harga dari Indodax.');
             return null;
         }
     }
 
-    // Fungsi untuk mengatur countdown tombol refresh
+    // Fungsi untuk countdown tombol refresh
     function startRefreshCooldown() {
         let secondsLeft = 30;
         refreshBtn.disabled = true;
@@ -49,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ id, status })
             });
             if (response.ok) {
-                loadJournalData(); // Muat ulang tabel setelah berhasil update
+                loadJournalData(); // Jika sukses, muat ulang semua data
             } else {
                 alert('Gagal memperbarui status order.');
             }
@@ -57,128 +64,132 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error saat update status:', error);
         }
     }
+    
+    // Fungsi untuk mengisi baris tabel (agar tidak menulis kode yang sama dua kali)
+    function populateTable(dataArray, targetTableBody, liveTickers) {
+        dataArray.forEach(entry => {
+            const row = document.createElement('tr');
+            const formattedDate = new Date(entry.timestamp).toLocaleString('id-ID');
+            const shortId = entry.id ? entry.id.split('-')[0] : 'Lama';
+            const status = entry.status || 'Open';
+            const statusClass = `status-${status.toLowerCase()}`;
+            const statusHTML = `<span class="status-badge ${statusClass}">${status}</span>`;
 
-    // === 3. FUNGSI UTAMA: MEMUAT SEMUA DATA KE TABEL ===
+            let profitCellHTML = 'N/A';
+            if (status === 'Open' && liveTickers) {
+                const apiPair = entry.pair.toLowerCase().replace('idr', '_idr');
+                const currentTicker = liveTickers[apiPair];
+                if (currentTicker) {
+                    const entryPrice = parseFloat(entry.entry);
+                    const livePrice = parseFloat(currentTicker.last);
+                    let percentage = 0;
+                    if (entry.duration === 'Long') {
+                        percentage = ((livePrice - entryPrice) / entryPrice) * 100;
+                    } else {
+                        percentage = ((entryPrice - livePrice) / entryPrice) * 100;
+                    }
+                    const colorClass = percentage >= 0 ? 'profit' : 'loss';
+                    profitCellHTML = `<span class="${colorClass}">${percentage.toFixed(2)}%</span>`;
+                }
+            }
+
+            let actionHTML = '';
+            if (status === 'Open') {
+                actionHTML = `<div class="action-buttons">
+                    <button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai">Selesai</button>
+                    <button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal">Batal</button>
+                </div>`;
+            }
+            
+            row.innerHTML = `<td>${shortId}</td><td>${formattedDate}</td><td>${entry.pair}</td><td>${entry.duration}</td><td>${statusHTML}</td><td>${entry.entry}</td><td>${entry.takeProfit}</td><td>${entry.stopLoss}</td><td>${entry.timeframe}</td><td>${profitCellHTML}</td><td>${actionHTML}</td>`;
+            targetTableBody.appendChild(row);
+        });
+    }
+
+    // === BAGIAN 3: FUNGSI UTAMA (MEMUAT DAN MEMISAHKAN DATA) ===
     async function loadJournalData() {
         refreshBtn.textContent = 'Memuat...';
-
         try {
+            // Ambil semua data dari server dan Indodax
             const journalResponse = await fetch('/api/data');
-            const journalData = await journalResponse.json();
+            const allJournalData = await journalResponse.json();
             const liveTickers = await getAllTickers();
 
+            // Kosongkan kedua tabel sebelum diisi
             tableBody.innerHTML = '';
-            journalData.reverse();
+            archiveTableBody.innerHTML = '';
+            
+            // Siapkan dua "keranjang" untuk memisahkan data
+            const activeOrders = [];
+            const archivedOrders = [];
 
-            journalData.forEach(entry => {
-                const row = document.createElement('tr');
-                const formattedDate = new Date(entry.timestamp).toLocaleString('id-ID');
-                const shortId = entry.id ? entry.id.split('-')[0] : 'Lama';
-                const status = entry.status || 'Open';
-                
-                const statusClass = `status-${status.toLowerCase()}`;
-                const statusHTML = `<span class="status-badge ${statusClass}">${status}</span>`;
-
-				const entryPrice = parseFloat(entry.entry);
-				const takeProfitPrice = parseFloat(entry.takeProfit);
-				const stopLossPrice = parseFloat(entry.stopLoss);
-
-				const formattedEntry = !isNaN(entryPrice) ? entryPrice.toLocaleString('id-ID') : entry.entry;
-                const formattedTP = !isNaN(takeProfitPrice) ? takeProfitPrice.toLocaleString('id-ID') : entry.takeProfit;
-                const formattedSL = !isNaN(stopLossPrice) ? stopLossPrice.toLocaleString('id-ID') : entry.stopLoss;
-
-                let profitCellHTML = 'N/A';
-                if (liveTickers && (status === 'Open' || status === 'Selesai')) {
-                    const apiPair = entry.pair.toLowerCase().replace('idr', '_idr');
-                    const currentTicker = liveTickers[apiPair];
-                    if (currentTicker) {
-                        const entryPrice = parseFloat(entry.entry);
-                        const livePrice = parseFloat(currentTicker.last);
-                        let percentage = 0;
-                        if (entry.duration === 'Long') {
-                            percentage = ((livePrice - entryPrice) / entryPrice) * 100;
-                        } else {
-                            percentage = ((entryPrice - livePrice) / entryPrice) * 100;
-                        }
-                        const colorClass = percentage >= 0 ? 'profit' : 'loss';
-                        profitCellHTML = `<span class="${colorClass}">${percentage.toFixed(2)}%</span>`;
-                    }
+            // Pisahkan setiap order ke keranjang yang sesuai
+            allJournalData.forEach(order => {
+                if (order.status === 'Open') {
+                    activeOrders.push(order);
+                } else {
+                    archivedOrders.push(order);
                 }
-
-                let actionHTML = '';
-                if (status === 'Open') {
-                    actionHTML = `
-                        <div class="action-buttons">
-                            <button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai">Selesai</button>
-                            <button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal">Batal</button>
-                        </div>
-                    `;
-                }
-
-                row.innerHTML = `
-                    <td>${shortId}</td>
-                    <td>${formattedDate}</td>
-                    <td>${entry.pair}</td>
-                    <td>${entry.duration}</td>
-                    <td>${statusHTML}</td>
-                    <td>${formattedEntry}</td>
-                    <td>${formattedTP}</td>
-                    <td>${formattedSL}</td>
-                    <td>${entry.timeframe}</td>
-                    <td>${profitCellHTML}</td>
-                    <td>${actionHTML}</td>
-                `;
-                tableBody.appendChild(row);
             });
+            
+            // Isi tabel aktif dan tabel arsip dengan data yang sudah dipisah
+            populateTable(activeOrders.reverse(), tableBody, liveTickers);
+            populateTable(archivedOrders.reverse(), archiveTableBody, null);
 
         } catch (error) {
             console.error('Gagal memuat data jurnal:', error);
-            tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center;">Gagal memuat data.</td></tr>`;
+            tableBody.innerHTML = '<tr><td colspan="11">Gagal memuat data.</td></tr>';
+            archiveTableBody.innerHTML = '<tr><td colspan="11">Gagal memuat data.</td></tr>';
         }
     }
 
-    // === 4. FUNGSI UNTUK NAVIGASI PINDAH HALAMAN ===
+    // === BAGIAN 4: FUNGSI NAVIGASI ===
+    // Mengatur halaman mana yang tampil dan mana yang sembunyi.
     function showPage(pageName) {
+        // Pertama, sembunyikan semua halaman
+        pageViewOrders.classList.add('hidden');
+        pageArchiveOrders.classList.add('hidden');
+        pageAddOrder.classList.add('hidden');
+        // Hapus tanda aktif dari semua link navigasi
+        navView.classList.remove('active');
+        navArchive.classList.remove('active');
+        navAdd.classList.remove('active');
+
+        // Lalu, tampilkan halaman yang dipilih dan beri tanda aktif
         if (pageName === 'view') {
             pageViewOrders.classList.remove('hidden');
-            pageAddOrder.classList.add('hidden');
             navView.classList.add('active');
-            navAdd.classList.remove('active');
+        } else if (pageName === 'archive') {
+            pageArchiveOrders.classList.remove('hidden');
+            navArchive.classList.add('active');
         } else if (pageName === 'add') {
-            pageViewOrders.classList.add('hidden');
             pageAddOrder.classList.remove('hidden');
-            navView.classList.remove('active');
             navAdd.classList.add('active');
         }
     }
 
-    // === 5. MENYAMBUNGKAN SEMUA FUNGSI KE EVENT CLICK ===
-
-    // Event untuk navigasi
+    // === BAGIAN 5: MENYAMBUNGKAN FUNGSI KE TOMBOL (EVENT LISTENERS) ===
     navView.addEventListener('click', (e) => { e.preventDefault(); showPage('view'); });
+    navArchive.addEventListener('click', (e) => { e.preventDefault(); showPage('archive'); });
     navAdd.addEventListener('click', (e) => { e.preventDefault(); showPage('add'); });
 
-    // Event untuk tombol refresh
     refreshBtn.addEventListener('click', () => {
         loadJournalData();
         startRefreshCooldown();
     });
-
-    // Event untuk tombol di dalam tabel (Selesai/Batal)
+    
+    // Event listener untuk tombol Selesai/Batal di dalam tabel
     tableBody.addEventListener('click', (e) => {
         if (e.target.matches('.action-btn')) {
             const id = e.target.dataset.id;
             const status = e.target.dataset.status;
             if (id && status) {
-                if(status === 'Batal' && !confirm('Anda yakin ingin membatalkan order ini?')) {
-                    return;
-                }
+                if(status === 'Batal' && !confirm('Anda yakin ingin membatalkan order ini?')) return;
                 updateOrderStatus(id, status);
             }
         }
     });
 
-    // Event untuk form submit
     journalForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(journalForm);
@@ -192,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 journalForm.reset();
                 await loadJournalData();
-                showPage('view');
+                showPage('view'); // Setelah submit, kembali ke halaman riwayat aktif
             } else {
                 alert('Gagal menyimpan data.');
             }
@@ -201,6 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === 6. JALANKAN PERTAMA KALI SAAT HALAMAN DIBUKA ===
+    // === BAGIAN 6: JALANKAN PERTAMA KALI SAAT HALAMAN DIBUKA ===
     loadJournalData();
 });

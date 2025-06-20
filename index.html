@@ -11,7 +11,8 @@
         <header>
             <h1>Jurnal Trading</h1>
             <nav>
-                <a href="#" id="nav-view" class="active">Lihat Riwayat</a>
+                <a href="#" id="nav-view" class="active">Riwayat Aktif</a>
+                <a href="#" id="nav-archive">Arsip</a>
                 <a href="#" id="nav-add">Tambah Order</a>
             </nav>
         </header>
@@ -48,42 +49,66 @@
                 </section>
             </div>
 
-		    <!-- Halaman untuk melihat tabel riwayat (tampil pertama kali) -->
-		    <div id="page-view-orders" class="page-content">
-		        <section class="table-section">
-		            
-		            <!-- ===== BAGIAN YANG DIUBAH MULAI DARI SINI ===== -->
+            <!-- Halaman untuk melihat riwayat aktif (tampil pertama kali) -->
+            <div id="page-view-orders" class="page-content">
+                 <section class="table-section">
+                    <div class="table-header">
+                        <h2>Riwayat Order Aktif</h2>
+                        <button id="refreshBtn">Refresh Harga</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="journalTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Pair</th>
+                                    <th>Jenis</th>
+                                    <th>Status</th>
+                                    <th>Entry</th>
+                                    <th>Take Profit</th>
+                                    <th>Stop Loss</th>
+                                    <th>Timeframe</th>
+                                    <th>Profit</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
 
-		            <div class="table-header">
-		                <h2>Riwayat Order</h2>
-		                <button id="refreshBtn">Refresh Harga</button>
-		            </div>
-
-		            <div class="table-wrapper">
-		                <table id="journalTable">
-		                    <thead>
-		                        <tr>
-		                        	<th>ID</th>
-		                            <th>Timestamp</th>
-		                            <th>Pair</th>
-		                            <th>Jenis</th>
-		                            <th>Status</th>
-		                            <th>Entry</th>
-		                            <th>Take Profit</th>
-		                            <th>Stop Loss</th>
-		                            <th>Timeframe</th>
-		                            <th>Profit</th>
-		                            <th>Action</th>
-		                        </tr>
-		                    </thead>
-		                    <tbody id="tableBody">
-		                        <!-- Data akan diisi oleh JavaScript -->
-		                    </tbody>
-		                </table>
-		            </div>
-		            <!-- ===== BAGIAN YANG DIUBAH SELESAI DI SINI ===== -->
-		        </section>
-		    </div>
+            <!-- Halaman untuk melihat arsip (awalnya disembunyikan) -->
+            <div id="page-archive-orders" class="page-content hidden">
+                 <section class="table-section">
+                    <h2>Arsip Order (Selesai/Batal)</h2>
+                    <div class="table-wrapper">
+                        <table id="archiveTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Pair</th>
+                                    <th>Jenis</th>
+                                    <th>Status</th>
+                                    <th>Entry</th>
+                                    <th>Take Profit</th>
+                                    <th>Stop Loss</th>
+                                    <th>Timeframe</th>
+                                    <th>Profit</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="archiveTableBody">
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
         </main>
 
         <footer>
