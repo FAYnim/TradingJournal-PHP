@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // === BAGIAN 1: MENGAMBIL SEMUA ELEMEN DARI HTML ===
-    // Kita "pegang" semua elemen yang akan kita ubah-ubah menggunakan JavaScript.
     const journalForm = document.getElementById('journalForm');
     const tableBody = document.getElementById('tableBody');
     const archiveTableBody = document.getElementById('archiveTableBody');
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshBtn = document.getElementById('refreshBtn');
 
     // === BAGIAN 2: FUNGSI-FUNGSI BANTU ===
-    // Kumpulan fungsi kecil yang akan kita gunakan berulang kali.
 
     // Fungsi untuk mengambil data harga dari Indodax
     async function getAllTickers() {
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 
-    // Fungsi untuk mengirim pembaruan status ke server (sekarang membawa data profit)
+    // Fungsi untuk mengirim pembaruan status ke server
     async function updateOrderStatus(id, status, final_profit) {
         try {
             const response = await fetch('/api/update-status', {
@@ -64,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Fungsi untuk mengisi baris tabel (sudah dimodifikasi untuk profit final)
+    // Fungsi untuk mengisi baris tabel
     function populateTable(dataArray, targetTableBody, liveTickers) {
         dataArray.forEach(entry => {
             const row = document.createElement('tr');
@@ -73,17 +71,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const status = entry.status || 'Open';
             const statusClass = `status-${status.toLowerCase()}`;
             const statusHTML = `<span class="status-badge ${statusClass}">${status}</span>`;
-            
-            let profitCellHTML = 'N/A';
-            let liveProfitPercentage = null; // Variabel untuk menyimpan profit live sementara
 
-            // Prioritas 1: Cek apakah ada profit final yang disimpan.
-            if (entry.final_profit !== undefined && entry.final_profit !== null) {
+            // Membuat tumpukan harga
+            const entryPriceF = parseFloat(entry.entry).toLocaleString('id-ID');
+            const tpPriceF = parseFloat(entry.takeProfit).toLocaleString('id-ID');
+            const slPriceF = parseFloat(entry.stopLoss).toLocaleString('id-ID');
+            const priceHTML = `
+                <div class="price-stack">
+                    <div class="price-item price-entry">E: ${entryPriceF}</div>
+                    <div class="price-item price-tp">TP: ${tpPriceF}</div>
+                    <div class="price-item price-sl">SL: ${slPriceF}</div>
+                </div>
+            `;
+
+            let profitCellHTML = 'N/A';
+            let liveProfitPercentage = null;
+
+            if (entry.final_profit !== undefined) {
                 const savedProfit = parseFloat(entry.final_profit);
                 const colorClass = savedProfit >= 0 ? 'profit' : 'loss';
                 profitCellHTML = `<span class="${colorClass}">${savedProfit.toFixed(2)}%</span>`;
-            
-            // Prioritas 2: Jika tidak ada, baru hitung profit live untuk order 'Open'.
             } else if (status === 'Open' && liveTickers) {
                 const apiPair = entry.pair.toLowerCase().replace('idr', '_idr');
                 const currentTicker = liveTickers[apiPair];
@@ -96,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         percentage = ((entryPrice - livePrice) / entryPrice) * 100;
                     }
-                    liveProfitPercentage = percentage; // Simpan nilai profit live untuk tombol
+                    liveProfitPercentage = percentage;
                     const colorClass = percentage >= 0 ? 'profit' : 'loss';
                     profitCellHTML = `<span class="${colorClass}">${percentage.toFixed(2)}%</span>`;
                 }
@@ -104,14 +111,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let actionHTML = '';
             if (status === 'Open') {
-                // Sisipkan nilai profit live ke dalam 'data-profit' di tombol
                 actionHTML = `<div class="action-buttons">
                     <button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai" data-profit="${liveProfitPercentage}">Selesai</button>
                     <button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal" data-profit="${liveProfitPercentage}">Batal</button>
                 </div>`;
             }
             
-            row.innerHTML = `<td>${shortId}</td><td>${formattedDate}</td><td>${entry.pair}</td><td>${entry.duration}</td><td>${statusHTML}</td><td>${entry.entry}</td><td>${entry.takeProfit}</td><td>${entry.stopLoss}</td><td>${entry.timeframe}</td><td>${profitCellHTML}</td><td>${actionHTML}</td>`;
+            row.innerHTML = `
+                <td>${shortId}</td>
+                <td>${formattedDate}</td>
+                <td>${entry.pair}</td>
+                <td>${entry.duration}</td>
+                <td>${statusHTML}</td>
+                <td>${priceHTML}</td>
+                <td>${entry.timeframe}</td>
+                <td>${profitCellHTML}</td>
+                <td>${actionHTML}</td>
+            `;
             targetTableBody.appendChild(row);
         });
     }
@@ -123,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const journalResponse = await fetch('/api/data');
             const allJournalData = await journalResponse.json();
             const liveTickers = await getAllTickers();
-            
+
             tableBody.innerHTML = '';
             archiveTableBody.innerHTML = '';
             
@@ -143,8 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Gagal memuat data jurnal:', error);
-            tableBody.innerHTML = '<tr><td colspan="11">Gagal memuat data.</td></tr>';
-            archiveTableBody.innerHTML = '<tr><td colspan="11">Gagal memuat data.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="9">Gagal memuat data.</td></tr>';
+            archiveTableBody.innerHTML = '<tr><td colspan="9">Gagal memuat data.</td></tr>';
         }
     }
 
@@ -179,15 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
         startRefreshCooldown();
     });
     
-    // Event listener untuk tombol Selesai/Batal, sekarang mengirim profit
     tableBody.addEventListener('click', (e) => {
         if (e.target.matches('.action-btn')) {
             const id = e.target.dataset.id;
             const status = e.target.dataset.status;
-            const profit = e.target.dataset.profit; // Ambil data profit dari tombol
+            const profit = e.target.dataset.profit;
             if (id && status) {
                 if(status === 'Batal' && !confirm('Anda yakin ingin membatalkan order ini?')) return;
-                updateOrderStatus(id, status, profit); // Kirim profit ke fungsi update
+                updateOrderStatus(id, status, profit);
             }
         }
     });

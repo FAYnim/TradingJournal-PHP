@@ -1,24 +1,13 @@
 [
   {
     "pair": "BTCIDR",
-    "entry": "1713000000",
-    "takeProfit": "1730000000",
-    "stopLoss": "1700000000",
+    "entry": "1704000000",
+    "takeProfit": "1699000000",
+    "stopLoss": "1719000000",
     "timeframe": "1H",
-    "duration": "Long",
-    "id": "1e30637d-e1e0-41f9-8b13-631dbb0487c8",
-    "timestamp": "2025-06-19T14:01:07.946Z",
-    "status": "Selesai"
-  },
-  {
-    "pair": "DOGEIDR",
-    "entry": "2775",
-    "takeProfit": "2759",
-    "stopLoss": "2807",
-    "timeframe": "15m",
     "duration": "Short",
-    "id": "0402c08e-4b83-4bf1-bae9-21ed6a31730f",
-    "timestamp": "2025-06-19T21:47:15.877Z",
-    "status": "Selesai"
+    "id": "ecea33ac-2f6e-4601-85b5-18f9fe54d1a6",
+    "timestamp": "2025-06-21T08:41:10.286Z",
+    "status": "Open"
   }
 ]

@@ -243,3 +243,26 @@ nav a.active {
 .status-open { background-color: #ff9800; } /* Oranye */
 .status-selesai { background-color: #4CAF50; } /* Hijau */
 .status-batal { background-color: #757575; } /* Abu-abu */
+
+/* ... (kode CSS yang sudah ada sebelumnya) ... */
+
+/* Gaya untuk wadah tumpukan harga */
+.price-stack {
+    display: flex;
+    flex-direction: column; /* Menyusun elemen ke bawah */
+    gap: 4px; /* Jarak antar elemen harga */
+}
+
+/* Gaya umum untuk setiap item harga */
+.price-item {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: white;
+    font-weight: 500;
+}
+
+/* Warna latar belakang spesifik */
+.price-entry { background-color: #2196F3; } /* Biru */
+.price-tp { background-color: #4CAF50; }    /* Hijau */
+.price-sl { background-color: #f44336; }    /* Merah */
