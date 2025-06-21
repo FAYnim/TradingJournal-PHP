@@ -1,38 +1,58 @@
-/* Gaya dasar & tema gelap */
+/* =================================================================== */
+/*                     JURNAL TRADING - STYLE.CSS                      */
+/* =================================================================== */
+
+
+/* === 1. PENGATURAN GLOBAL & DASAR === */
+/* Bagian ini mengatur fondasi dari seluruh halaman, seperti variabel
+   warna, reset CSS, dan gaya dasar untuk body. */
+/* =================================================================== */
+
 :root {
+    /* Tema gelap dan variabel warna agar mudah diubah */
     --bg-color: #1a1a1a;
     --surface-color: #2c2c2c;
-    --primary-color: #4CAF50; /* Hijau untuk tombol */
+    --primary-color: #4CAF50; /* Hijau untuk elemen penting */
     --text-color: #e0e0e0;
     --border-color: #444;
 }
 
 * {
+    /* Reset dasar untuk menghapus margin & padding bawaan browser */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
+    /* Gaya dasar untuk seluruh halaman */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
 }
 
+
+/* === 2. STRUKTUR LAYOUT UTAMA === */
+/* Mengatur tata letak elemen-elemen besar seperti container,
+   header, dan footer. */
+/* =================================================================== */
+
 .container {
+    /* Wadah utama aplikasi agar konten tidak terlalu lebar di desktop */
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Header dan Footer */
 header, footer {
+    /* Gaya untuk header dan footer */
     text-align: center;
     padding: 20px 0;
 }
 
 footer {
+    /* Sedikit pemisah dan gaya tambahan untuk footer */
     margin-top: 40px;
     border-top: 1px solid var(--border-color);
     font-size: 0.9em;
@@ -47,20 +67,72 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* Bagian Input Form */
+h1, h2 {
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+
+/* === 3. KOMPONEN NAVIGASI === */
+/* Semua gaya yang berhubungan dengan menu navigasi di bagian atas. */
+/* =================================================================== */
+
+nav {
+    /* Wadah untuk link navigasi */
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+nav a {
+    /* Gaya untuk setiap link navigasi */
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--text-color);
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+nav a:hover {
+    background-color: var(--surface-color);
+}
+
+nav a.active {
+    /* Gaya khusus untuk link yang sedang aktif */
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+
+/* === 4. PENGATURAN HALAMAN & KONTEN === */
+/* Gaya untuk menyembunyikan dan menampilkan "halaman" konten. */
+/* =================================================================== */
+
+.hidden {
+    /* Kelas sederhana untuk menyembunyikan elemen */
+    display: none;
+}
+
+
+/* === 5. KOMPONEN FORM INPUT === */
+/* Semua gaya yang berhubungan dengan form tambah order. */
+/* =================================================================== */
+
 .input-section {
+    /* Wadah untuk form */
     background-color: var(--surface-color);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 30px;
 }
 
-h1, h2 {
-    margin-bottom: 20px;
-    color: #fff;
-}
-
 form {
+    /* Mengatur tata letak input di dalam form */
     display: grid;
     gap: 15px;
 }
@@ -71,6 +143,7 @@ label {
 }
 
 input, select {
+    /* Gaya untuk semua kotak input dan pilihan */
     width: 100%;
     padding: 10px;
     background-color: var(--bg-color);
@@ -85,7 +158,8 @@ input:focus, select:focus {
     border-color: var(--primary-color);
 }
 
-button {
+button[type="submit"] {
+    /* Gaya khusus untuk tombol "Catat Order" */
     padding: 12px;
     background-color: var(--primary-color);
     color: white;
@@ -97,79 +171,16 @@ button {
     transition: background-color 0.2s;
 }
 
-button:hover {
+button[type="submit"]:hover {
     background-color: #45a049;
 }
 
-/* Bagian Tabel */
-.table-wrapper {
-    overflow-x: auto; /* Agar bisa di-scroll ke samping di HP */
-}
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
+/* === 6. KOMPONEN TABEL RIWAYAT & ARSIP === */
+/* Bagian terbesar, mengatur semua yang ada di dalam tabel. */
+/* =================================================================== */
 
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-thead {
-    background-color: var(--surface-color);
-}
-
-th {
-    font-size: 0.9em;
-    text-transform: uppercase;
-}
-
-tbody tr:hover {
-    background-color: #333;
-}
-
-/* ... (kode CSS yang sudah ada sebelumnya) ... */
-
-/* Gaya untuk Navigasi */
-nav {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
-}
-
-nav a {
-    padding: 8px 16px;
-    text-decoration: none;
-    color: var(--text-color);
-    border-radius: 4px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-}
-
-nav a:hover {
-    background-color: var(--surface-color);
-}
-
-/* Gaya untuk link navigasi yang aktif */
-nav a.active {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-/* Kelas untuk menyembunyikan halaman */
-.hidden {
-    display: none;
-}
-
-
-/* Gaya untuk header tabel dan tombol refresh */
+/* -- Header Tabel (Judul dan Tombol Refresh) -- */
 .table-header {
     display: flex;
     justify-content: space-between;
@@ -196,41 +207,58 @@ nav a.active {
     opacity: 0.5;
 }
 
-/* Gaya untuk warna teks profit dan loss */
-.profit {
-    color: #4CAF50; /* Hijau */
-    font-weight: bold;
+/* -- Struktur Dasar Tabel -- */
+.table-wrapper {
+    /* Memungkinkan tabel di-scroll ke samping di layar kecil (mobile) */
+    overflow-x: auto;
 }
 
-.loss {
-    color: #f44336; /* Merah */
-    font-weight: bold;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
-/* ... (kode CSS yang sudah ada sebelumnya) ... */
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle; /* Membuat konten di tengah secara vertikal */
+}
 
-/* Gaya untuk tombol aksi di dalam tabel */
-.action-buttons {
+thead {
+    background-color: var(--surface-color);
+}
+
+th {
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+tbody tr:hover {
+    background-color: #333;
+}
+
+/* -- Gaya Spesifik untuk Konten di Dalam Tabel -- */
+
+/* Tumpukan harga (Entry, TP, SL) */
+.price-stack {
     display: flex;
-    gap: 5px;
+    flex-direction: column;
+    gap: 4px;
 }
-
-.action-btn {
+.price-item {
     padding: 4px 8px;
-    font-size: 0.8em;
-    border: none;
     border-radius: 4px;
-    cursor: pointer;
+    font-size: 0.9em;
     color: white;
+    font-weight: 500;
 }
+.price-entry { background-color: #2196F3; } /* Biru */
+.price-tp { background-color: #4CAF50; }    /* Hijau */
+.price-sl { background-color: #f44336; }    /* Merah */
 
-.btn-selesai { background-color: #2196F3; } /* Biru */
-.btn-selesai:hover { background-color: #1976D2; }
-
-.btn-batal { background-color: #f44336; } /* Merah */
-.btn-batal:hover { background-color: #d32f2f; }
-
-/* Gaya untuk label status */
+/* Label status (Open, Selesai, Batal) */
 .status-badge {
     padding: 3px 8px;
     border-radius: 12px;
@@ -239,30 +267,39 @@ nav a.active {
     color: #fff;
     display: inline-block;
 }
-
-.status-open { background-color: #ff9800; } /* Oranye */
+.status-open { background-color: #ff9800; }    /* Oranye */
 .status-selesai { background-color: #4CAF50; } /* Hijau */
-.status-batal { background-color: #757575; } /* Abu-abu */
+.status-batal { background-color: #757575; }   /* Abu-abu */
 
-/* ... (kode CSS yang sudah ada sebelumnya) ... */
-
-/* Gaya untuk wadah tumpukan harga */
-.price-stack {
+/* Tombol aksi (Selesai, Batal) */
+.action-buttons {
     display: flex;
-    flex-direction: column; /* Menyusun elemen ke bawah */
-    gap: 4px; /* Jarak antar elemen harga */
+    gap: 5px;
 }
-
-/* Gaya umum untuk setiap item harga */
-.price-item {
+.action-btn {
     padding: 4px 8px;
+    font-size: 0.8em;
+    border: none;
     border-radius: 4px;
-    font-size: 0.9em;
+    cursor: pointer;
     color: white;
-    font-weight: 500;
+}
+.btn-selesai { background-color: #2196F3; }
+.btn-selesai:hover { background-color: #1976D2; }
+.btn-batal { background-color: #f44336; }
+.btn-batal:hover { background-color: #d32f2f; }
+
+
+/* === 7. KELAS UTILITAS (BANTUAN) === */
+/* Kelas-kelas kecil yang bisa digunakan di mana saja. */
+/* =================================================================== */
+
+.profit {
+    color: #4CAF50; /* Hijau untuk teks profit */
+    font-weight: bold;
 }
 
-/* Warna latar belakang spesifik */
-.price-entry { background-color: #2196F3; } /* Biru */
-.price-tp { background-color: #4CAF50; }    /* Hijau */
-.price-sl { background-color: #f44336; }    /* Merah */
+.loss {
+    color: #f44336; /* Merah untuk teks loss */
+    font-weight: bold;
+}
