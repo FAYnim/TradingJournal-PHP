@@ -43,11 +43,6 @@ const server = http.createServer((req, res) => {
         });
     }
 
-    // =================================================================
-    //         INI ADALAH BAGIAN YANG MEMPERBAIKI MASALAH ANDA
-    // =================================================================
-    // Kita perlu mengajari 'pelayan' cara mengambil file dari folder 'js'.
-
     // Jika browser minta file '/js/api.js'
     else if (req.method === 'GET' && req.url === '/js/api.js') {
         // Pelayan akan mencari file 'api.js' di dalam folder 'js'
@@ -65,10 +60,6 @@ const server = http.createServer((req, res) => {
             res.end(content);
         });
     }
-    // =================================================================
-    //                          PERBAIKAN SELESAI
-    // =================================================================
-
     // Jika browser minta semua data jurnal (untuk ditampilkan di tabel)
     else if (req.method === 'GET' && req.url === '/api/data') {
         fs.readFile(DATA_FILE, 'utf8', (err, data) => {
@@ -78,8 +69,6 @@ const server = http.createServer((req, res) => {
         });
     }
     
-    // === BAGIAN 2: MENANGANI PENGIRIMAN DATA (POST) ===
-
     // Endpoint untuk MENAMBAH order baru
     else if (req.method === 'POST' && req.url === '/api/data') {
         let body = '';
