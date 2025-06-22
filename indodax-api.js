@@ -102,3 +102,12 @@ async function getDepth(pair = 'btc_idr') {
     console.log("Data ticker untuk DOGE/IDR:", allTickers.doge_idr);
   }
 })();*/
+
+// Tambahkan ini di bagian paling bawah file indodax-api.js
+
+module.exports = {
+  getTicker,
+  getAllTickers,
+  getTrades,
+  getDepth
+};

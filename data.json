@@ -8,6 +8,18 @@
     "duration": "Short",
     "id": "ecea33ac-2f6e-4601-85b5-18f9fe54d1a6",
     "timestamp": "2025-06-21T08:41:10.286Z",
+    "status": "Selesai",
+    "final_profit": "1.6911971830985917"
+  },
+  {
+    "pair": "BTCIDR",
+    "entry": "1700000000",
+    "takeProfit": "1712000000",
+    "stopLoss": "1673000000",
+    "timeframe": "1H",
+    "duration": "Long",
+    "id": "cb675993-86cb-48f1-9461-4f73dc64880f",
+    "timestamp": "2025-06-22T01:01:38.646Z",
     "status": "Open"
   }
 ]
