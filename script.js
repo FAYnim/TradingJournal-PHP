@@ -3,7 +3,11 @@ import * as ui from './js/ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ==========================================================
+    // BAGIAN 1: Mengambil semua elemen HTML yang kita butuhkan
+    // ==========================================================
     const elements = {
+        // Elemen asli
         journalForm: document.getElementById('journalForm'),
         tableBody: document.getElementById('tableBody'),
         archiveTableBody: document.getElementById('archiveTableBody'),
@@ -14,8 +18,46 @@ document.addEventListener('DOMContentLoaded', () => {
         pageArchiveOrders: document.getElementById('page-archive-orders'),
         pageAddOrder: document.getElementById('page-add-order'),
         refreshBtn: document.getElementById('refreshBtn'),
+
+        // Elemen baru untuk sidebar & header
+        menuToggle: document.getElementById('menu-toggle'),
+        sidebar: document.getElementById('sidebar'),
+        sidebarOverlay: document.getElementById('sidebar-overlay'),
+        mainNav: document.getElementById('main-nav')
     };
 
+
+    // ==========================================================
+    // BAGIAN 2: Logika untuk membuka dan menutup sidebar
+    // ==========================================================
+
+    // Fungsi sederhana untuk menambah/menghapus class 'sidebar-open'
+    // CSS akan menangani animasi buka-tutupnya
+    function toggleSidebar() {
+        document.body.classList.toggle('sidebar-open');
+    }
+
+    // Ketika tombol hamburger diklik, panggil fungsi toggleSidebar
+    elements.menuToggle.addEventListener('click', toggleSidebar);
+
+    // Ketika area gelap (overlay) diklik, panggil fungsi toggleSidebar untuk menutup
+    elements.sidebarOverlay.addEventListener('click', toggleSidebar);
+
+    // Ketika salah satu link navigasi di sidebar diklik
+    elements.mainNav.addEventListener('click', (e) => {
+        // Cek apakah yang diklik adalah sebuah link (tag <a>)
+        if (e.target.tagName === 'A') {
+            // Jika iya, langsung tutup sidebar
+            toggleSidebar();
+        }
+    });
+
+
+    // ==========================================================
+    // BAGIAN 3: Logika utama aplikasi (tidak berubah)
+    // ==========================================================
+
+    // Fungsi untuk memuat semua data dari server dan menampilkannya di tabel
     async function loadJournalData() {
         elements.refreshBtn.textContent = 'Memuat...';
         try {
@@ -26,11 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const activeOrders = [];
             const archivedOrders = [];
 
+            // Memisahkan data order aktif dan yang sudah diarsip
             allJournalData.forEach(order => {
                 if (order.status === 'Open') activeOrders.push(order);
                 else archivedOrders.push(order);
             });
             
+            // Mengisi tabel dengan data yang sudah dipisah
             ui.populateTable(activeOrders.reverse(), elements.tableBody, liveTickers);
             ui.populateTable(archivedOrders.reverse(), elements.archiveTableBody, null);
 
@@ -41,15 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Mengatur perpindahan halaman saat menu diklik
     elements.navView.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('view', elements); });
     elements.navArchive.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('archive', elements); });
     elements.navAdd.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('add', elements); });
 
+    // Mengatur tombol refresh harga
     elements.refreshBtn.addEventListener('click', () => {
         loadJournalData();
         ui.startRefreshCooldown(elements.refreshBtn);
     });
     
+    // Mengatur tombol "Selesai" dan "Batal" di dalam tabel
     elements.tableBody.addEventListener('click', async (e) => {
         if (e.target.matches('.action-btn')) {
             const id = e.target.dataset.id;
@@ -64,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Mengatur form untuk menambah order baru
     elements.journalForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(elements.journalForm);
@@ -86,5 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ==========================================================
+    // BAGIAN 4: Memuat data pertama kali saat halaman dibuka
+    // ==========================================================
     loadJournalData();
 });

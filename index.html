@@ -7,114 +7,130 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Jurnal Trading</h1>
-            <nav>
-                <a href="#" id="nav-view" class="active">Riwayat Aktif</a>
-                <a href="#" id="nav-archive">Arsip</a>
-                <a href="#" id="nav-add">Tambah Order</a>
-            </nav>
-        </header>
 
-        <main>
-            <!-- Halaman untuk menambah order (awalnya disembunyikan) -->
-            <div id="page-add-order" class="page-content hidden">
-                <section class="input-section">
-                    <h2>Catat Order Baru</h2>
-                    <form id="journalForm">
-                        <label for="pair">Pair</label>
-                        <input type="text" id="pair" name="pair" value="BTCIDR" required>
+    <!-- 1. HEADER TETAP DI ATAS -->
+    <header class="main-header">
+        <h1 class="header-title">Jurnal Trading</h1>
+        <button id="menu-toggle" class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
 
-                        <label for="entry">Harga Entry</label>
-                        <input type="number" id="entry" name="entry" step="any" required>
-
-                        <label for="takeProfit">Take Profit</label>
-                        <input type="number" id="takeProfit" name="takeProfit" step="any" required>
-
-                        <label for="stopLoss">Stop Loss</label>
-                        <input type="number" id="stopLoss" name="stopLoss" step="any" required>
-
-                        <label for="timeframe">Timeframe</label>
-                        <input type="text" id="timeframe" name="timeframe" value="1H" required>
-
-                        <label for="duration">Jenis Order</label>
-                        <select id="duration" name="duration" required>
-                            <option value="Long">Long</option>
-                            <option value="Short">Short</option>
-                        </select>
-
-                        <button type="submit">Catat Order</button>
-                    </form>
-                </section>
-            </div>
-
-            <!-- Halaman untuk melihat riwayat aktif (tampil pertama kali) -->
-            <div id="page-view-orders" class="page-content">
-                 <section class="table-section">
-                    <div class="table-header">
-                        <h2>Riwayat Order Aktif</h2>
-                        <button id="refreshBtn">Refresh Harga</button>
-                    </div>
-                    <div class="table-wrapper">
-                        <table id="journalTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Timestamp</th>
-                                    <th>Pair</th>
-                                    <th>Jenis</th>
-                                    <th>Status</th>
-                                    <th>Price</th>
-                                    <th>Timeframe</th>
-                                    <th>Profit</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Data akan diisi oleh JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Halaman untuk melihat arsip (awalnya disembunyikan) -->
-            <div id="page-archive-orders" class="page-content hidden">
-                 <section class="table-section">
-                    <h2>Arsip Order (Selesai/Batal)</h2>
-                    <div class="table-wrapper">
-                        <table id="archiveTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Timestamp</th>
-                                    <th>Pair</th>
-                                    <th>Jenis</th>
-                                    <th>Status</th>
-                                    <th>Price</th>
-                                    <th>Timeframe</th>
-                                    <th>Profit</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="archiveTableBody">
-                                <!-- Data akan diisi oleh JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <footer>
+    <!-- 2. SIDEBAR (MENU NAVIGASI YANG TERSEMBUNYI) -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+        </div>
+        <nav id="main-nav">
+            <a href="#" id="nav-view" class="active">Riwayat Aktif</a>
+            <a href="#" id="nav-archive">Arsip</a>
+            <a href="#" id="nav-add">Tambah Order</a>
+        </nav>
+        <div class="sidebar-footer">
             <p>Dibuat oleh Faris</p>
             <p>
                 <a href="https://instagram.com/faris.a.y" target="_blank">Instagram</a> | 
                 <a href="https://threads.net/@faris.a.y" target="_blank">Threads</a>
             </p>
-        </footer>
-    </div>
+        </div>
+    </aside>
+
+    <!-- Lapisan gelap saat menu terbuka -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- 3. KONTEN UTAMA -->
+    <main id="main-content" class="main-content">
+        <!-- Halaman untuk menambah order (awalnya disembunyikan) -->
+        <div id="page-add-order" class="page-content hidden">
+            <section class="input-section">
+                <h2>Catat Order Baru</h2>
+                <form id="journalForm">
+                    <label for="pair">Pair</label>
+                    <input type="text" id="pair" name="pair" value="BTCIDR" required>
+
+                    <label for="entry">Harga Entry</label>
+                    <input type="number" id="entry" name="entry" step="any" required>
+
+                    <label for="takeProfit">Take Profit</label>
+                    <input type="number" id="takeProfit" name="takeProfit" step="any" required>
+
+                    <label for="stopLoss">Stop Loss</label>
+                    <input type="number" id="stopLoss" name="stopLoss" step="any" required>
+
+                    <label for="timeframe">Timeframe</label>
+                    <input type="text" id="timeframe" name="timeframe" value="1H" required>
+
+                    <label for="duration">Jenis Order</label>
+                    <select id="duration" name="duration" required>
+                        <option value="Long">Long</option>
+                        <option value="Short">Short</option>
+                    </select>
+
+                    <button type="submit">Catat Order</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Halaman untuk melihat riwayat aktif (tampil pertama kali) -->
+        <div id="page-view-orders" class="page-content">
+             <section class="table-section">
+                <div class="table-header">
+                    <h2>Riwayat Order Aktif</h2>
+                    <button id="refreshBtn">Refresh Harga</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="journalTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Timestamp</th>
+                                <th>Pair</th>
+                                <th>Jenis</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                                <th>Timeframe</th>
+                                <th>Profit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Halaman untuk melihat arsip (awalnya disembunyikan) -->
+        <div id="page-archive-orders" class="page-content hidden">
+             <section class="table-section">
+                <h2>Arsip Order (Selesai/Batal)</h2>
+                <div class="table-wrapper">
+                    <table id="archiveTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Timestamp</th>
+                                <th>Pair</th>
+                                <th>Jenis</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                                <th>Timeframe</th>
+                                <th>Profit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archiveTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+    
 	<script type="module" src="script.js"></script>
 </body>
 </html>

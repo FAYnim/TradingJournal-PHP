@@ -1,0 +1,17 @@
+.
+├── README.md
+├── data
+│   ├── data-order.json
+│   └── data-ticker.json
+├── get-ticker.js
+├── index.html
+├── indodax-api.js
+├── js
+│   ├── api.js
+│   └── ui.js
+├── script.js
+├── server.js
+├── structure.txt
+└── style.css
+
+3 directories, 12 files
