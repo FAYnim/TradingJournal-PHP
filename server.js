@@ -6,7 +6,7 @@ const crypto = require('crypto'); // Untuk membuat ID unik
 
 // Pengaturan dasar
 const PORT = 3000; // Alamat 'pintu' server kita
-const DATA_FILE = path.join(__dirname, 'data.json'); // Lokasi file data kita
+const DATA_FILE = path.join(__dirname, 'data', 'data-order.json'); // Lokasi file data kita
 
 // Membuat server. Anggap server ini seperti seorang pelayan di restoran.
 const server = http.createServer((req, res) => {
