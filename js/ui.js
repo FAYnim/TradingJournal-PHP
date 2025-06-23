@@ -79,5 +79,9 @@ export function showPage(pageName, elements) {
     } else if (pageName === 'add') {
         elements.pageAddOrder.classList.remove('hidden');
         elements.navAdd.classList.add('active');
-    }
+    } else if (pageName === 'portfolio') {
+        elements.pagePortfolio.classList.remove('hidden');
+        elements.navPortfolio.classList.add('active');
+	}
 }
+
