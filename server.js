@@ -1,27 +1,71 @@
 // server.js (disesuaikan untuk modul http bawaan)
 
-// Memanggil modul-modul bawaan NodeJS yang kita butuhkan
-const http = require('http'); // Untuk membuat server
-const fs = require('fs');     // Untuk mengelola file (baca/tulis)
-const path = require('path'); // Untuk mengelola path/lokasi file
-const crypto = require('crypto'); // Untuk membuat ID unik
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
 
-// Pengaturan dasar
-const PORT = 3000; // Alamat 'pintu' server kita
-const DATA_FILE = path.join(__dirname, 'data', 'data-order.json'); // Lokasi file data order
-// ===== TAMBAHKAN PATH UNTUK FILE DATA PORTOFOLIO =====
-const PORTFOLIO_DATA_FILE = path.join(__dirname, 'data', 'data-portfolio.json');
+const PORT = 3000;
+const DATA_FILE = path.join(__dirname, 'data', 'data-order.json');
+// ===== File data-portfolio.json tidak lagi kita perlukan =====
+// const PORTFOLIO_DATA_FILE = path.join(__dirname, 'data', 'data-portfolio.json');
 
-// Membuat server. Anggap server ini seperti seorang pelayan di restoran.
+// ===== FUNGSI BARU UNTUK MENGHITUNG STATISTIK PORTOFOLIO =====
+function calculatePortfolioStats(orders) {
+    const summary = {
+        totalTrades: 0,
+        wins: 0,
+        losses: 0,
+        batal: 0,
+        totalProfit: 0,
+        winRate: 0,
+        avgWin: 0,
+        avgLoss: 0
+    };
+
+    let totalWinProfit = 0;
+    let totalLossProfit = 0;
+
+    // Loop melalui setiap order yang sudah selesai atau batal
+    for (const order of orders) {
+        if (order.status === 'Selesai') {
+            const profit = parseFloat(order.final_profit);
+            // Lanjutkan hanya jika final_profit adalah angka yang valid
+            if (isNaN(profit)) continue;
+
+            summary.totalProfit += profit;
+
+            if (profit >= 0) {
+                summary.wins++;
+                totalWinProfit += profit;
+            } else {
+                summary.losses++;
+                totalLossProfit += profit;
+            }
+        } else if (order.status === 'Batal') {
+            summary.batal++;
+        }
+    }
+
+    // Hitung statistik turunan setelah loop selesai
+    summary.totalTrades = summary.wins + summary.losses;
+
+    if (summary.totalTrades > 0) {
+        summary.winRate = (summary.wins / summary.totalTrades) * 100;
+    }
+    if (summary.wins > 0) {
+        summary.avgWin = (totalWinProfit / summary.wins).toFixed(2);
+    }
+    if (summary.losses > 0) {
+        summary.avgLoss = (totalLossProfit / summary.losses).toFixed(2);
+    }
+
+    // Kembalikan objek dengan format yang sama seperti yang diharapkan frontend
+    return { summary };
+}
+
 const server = http.createServer((req, res) => {
-    // Setiap kali ada permintaan dari browser, kode di dalam ini akan berjalan.
-    // 'req' adalah permintaan/pesanan dari browser.
-    // 'res' adalah respons/jawaban yang akan kita kirim kembali.
-
-    // === BAGIAN 1: MENANGANI PERMINTAAN HALAMAN (GET) ===
-    // Pelayan mengecek pesanan dari browser.
-
-    // Jika browser minta halaman utama ('/')
+    // ... (Kode untuk menyajikan file HTML, CSS, JS tetap sama) ...
     if (req.method === 'GET' && req.url === '/') {
         fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
             if (err) { res.writeHead(500); res.end('Error server.'); return; }
@@ -29,8 +73,6 @@ const server = http.createServer((req, res) => {
             res.end(content);
         });
     }
-
-    // ... (kode untuk /style.css, /script.js, /js/api.js, /js/ui.js tidak berubah) ...
     else if (req.method === 'GET' && req.url === '/style.css') {
         fs.readFile(path.join(__dirname, 'style.css'), (err, content) => {
             res.writeHead(200, { 'Content-Type': 'text/css' });
@@ -55,7 +97,6 @@ const server = http.createServer((req, res) => {
             res.end(content);
         });
     }
-    // Jika browser minta semua data jurnal (untuk ditampilkan di tabel)
     else if (req.method === 'GET' && req.url === '/api/data') {
         fs.readFile(DATA_FILE, 'utf8', (err, data) => {
             if (err) { res.writeHead(200, { 'Content-Type': 'application/json' }); res.end('[]'); return; }
@@ -64,22 +105,32 @@ const server = http.createServer((req, res) => {
         });
     }
 
-    // ===== TAMBAHKAN ENDPOINT BARU UNTUK DATA PORTOFOLIO =====
-    // Jika browser minta data portofolio (untuk halaman statistik)
+    // ===== MODIFIKASI ENDPOINT /api/portfolio =====
     else if (req.method === 'GET' && req.url === '/api/portfolio') {
-        fs.readFile(PORTFOLIO_DATA_FILE, 'utf8', (err, data) => {
+        // 1. Baca file data order, bukan data portofolio
+        fs.readFile(DATA_FILE, 'utf8', (err, data) => {
             if (err) {
-                console.error('Gagal membaca file data portofolio:', err);
+                console.error('Gagal membaca file data order untuk portofolio:', err);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Gagal memuat data portofolio' }));
+                res.end(JSON.stringify({ message: 'Gagal memuat data order' }));
                 return;
             }
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(data);
+            try {
+                const allOrders = JSON.parse(data);
+                // 2. Lakukan kalkulasi berdasarkan data order
+                const portfolioData = calculatePortfolioStats(allOrders);
+                // 3. Kirim hasil kalkulasi sebagai respons
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(portfolioData));
+            } catch (parseError) {
+                console.error('Gagal mem-parsing data order:', parseError);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Format data order tidak valid' }));
+            }
         });
     }
     
-    // ... (kode untuk POST /api/data dan POST /api/update-status tidak berubah) ...
+    // ... (Kode untuk POST /api/data dan POST /api/update-status tetap sama) ...
     else if (req.method === 'POST' && req.url === '/api/data') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
@@ -129,30 +180,17 @@ const server = http.createServer((req, res) => {
         });
     }
     
-    // Jika browser minta halaman yang tidak ada
     else {
         res.writeHead(404);
         res.end('Halaman tidak ditemukan');
     }
 });
 
-// Menjalankan server agar 'pelayan' mulai bekerja
 server.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
-    // Jika file data.json belum ada, buat file kosong agar tidak error
     if (!fs.existsSync(DATA_FILE)) {
         fs.writeFileSync(DATA_FILE, '[]', 'utf8');
         console.log('File data-order.json berhasil dibuat.');
     }
-    
-    // ===== TAMBAHKAN LOGIKA UNTUK MEMBUAT FILE PORTOFOLIO =====
-    // Jika file data-portfolio.json belum ada, buat file dengan data contoh
-    if (!fs.existsSync(PORTFOLIO_DATA_FILE)) {
-        const defaultPortfolioData = {
-            "summary": { "totalTrades": 0, "wins": 0, "losses": 0, "batal": 0, "totalProfit": 0, "winRate": 0, "avgWin": 0, "avgLoss": 0 },
-            "performanceByPair": {}
-        };
-        fs.writeFileSync(PORTFOLIO_DATA_FILE, JSON.stringify(defaultPortfolioData, null, 2), 'utf8');
-        console.log('File data-portfolio.json berhasil dibuat.');
-    }
+    // ===== Logika untuk membuat data-portfolio.json sudah dihapus karena tidak relevan =====
 });
