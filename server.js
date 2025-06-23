@@ -15,10 +15,7 @@ const DATA_FILE = path.join(__dirname, 'data', 'data-order.json');
 
 // ===== 3. Penggunaan Middleware =====
 app.use(express.json()); 
-app.use(express.static(__dirname)); 
-
-// ===== 4. FUNGSI HELPER SUDAH DIHAPUS DARI SINI =====
-// Logika kalkulasi sekarang berada di utils/statsCalculator.js
+app.use(express.static(path.join(__dirname, 'public')));  // menjadikan public sebagai directory statis
 
 // ===== 5. Definisi Rute (API Endpoints) =====
 
