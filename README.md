@@ -1,78 +1,113 @@
-# 📒 TradingJournal
+# TradingJournal
 
-Aplikasi Jurnal Trading berbasis web sederhana untuk mencatat, memantau, dan mengelola riwayat order trading Anda. Struktur repo ini sudah disiapkan agar mudah berkembang, memisahkan kode frontend dan backend secara jelas.
-
-## ✨ Fitur
-
-- 📝 **Catat Order Baru:** Input order trading (pair, harga entry, take profit, stop loss, timeframe, jenis order).
-- 📊 **Riwayat Order:** Lihat daftar order aktif dan order yang sudah diarsipkan (selesai/batal).
-- 🔄 **Update Status:** Tandai order sebagai selesai atau batal.
-- 💹 **Live Harga:** Ambil harga pasar terkini dari API Indodax.
-- 🛠️ **Arsitektur Sederhana & Modular:** Backend Node.js tanpa database, data disimpan di file JSON, struktur folder scalable.
-- 📱 **Tampilan Responsive:** Menggunakan HTML, CSS modern, dan JavaScript modul.
-
-## 🌳 Struktur Folder & File
-
-```
-TradingJournal/
-├── backend/
-│   ├── server.js            # Server & API backend Node.js
-│   ├── indodax-api.js       # Modul fetch data Indodax
-│   ├── data/
-│   │   └── data.json        # Data jurnal trading
-│   └── package.json         # Metadata & dependencies backend
-│
-├── frontend/
-│   ├── public/
-│   │   ├── index.html       # Main HTML
-│   │   ├── style.css        # Style utama
-│   │   └── assets/          # (optional, gambar/font)
-│   │
-│   └── src/
-│       ├── script.js        # Entry point frontend
-│       ├── js/
-│       │   ├── api.js       # Modul API frontend
-│       │   └── ui.js        # Modul UI frontend
-│       └── components/      # (optional, komponen modular)
-│
-├── .gitignore
-├── README.md
-```
-
-## 🚀 Cara Menjalankan
-
-1. **Install dependency manager:**  
-   Pastikan sudah terinstall [Node.js](https://nodejs.org/) dan [pnpm](https://pnpm.io/).
-
-2. **Install dependencies backend:**
-   ```bash
-   cd backend
-   pnpm install
-   ```
-
-3. **Jalankan server backend:**
-   ```bash
-   node server.js
-   ```
-
-4. **Buka aplikasi di browser:**
-   ```
-   http://localhost:3000
-   ```
-
-## ℹ️ Catatan Teknis
-
-- Semua data order trading disimpan dalam `backend/data/data.json` secara lokal (bisa diupgrade ke database di masa depan).
-- Server Node.js hanya untuk serving file statis dan REST API sederhana, tidak untuk deployment production.
-- Fitur live harga menggunakan API publik dari Indodax.
-- Struktur frontend bisa dikembangkan ke framework modern (React/Vue/Svelte) dengan mudah.
-
-## 👤 Kredit
-
-Dikembangkan oleh Faris  
-Instagram: [@faris.a.y](https://instagram.com/faris.a.y)  
-Threads: [@faris.a.y](https://threads.net/@faris.a.y)
+Aplikasi **Jurnal Trading** berbasis web untuk mencatat, memantau, dan menganalisis hasil trading Anda. Mendukung pencatatan order, arsip, portofolio, serta visualisasi statistik performa trading secara real-time menggunakan data harga dari Indodax.
 
 ---
 
-**Lisensi:** ISC (lihat `backend/package.json`) 📄
+## 🚀 Tech Stack
+
+- **Frontend:** HTML5, CSS3, JavaScript (ES6 Modules), Chart.js
+- **Backend:** Node.js (Express)
+- **Database:** JSON file (default, bisa dikembangkan)
+- **API Market Data:** [Indodax Public API](https://indodax.com/downloads/BITCOINCOID-API-DOCUMENTATION.pdf)
+- **Package Manager:** [pnpm](https://pnpm.io/)
+
+
+---
+
+## 📋 Requirements
+
+- Node.js v16 atau lebih baru
+- pnpm (alternatif: npm/yarn, namun pnpm direkomendasikan)
+- Koneksi internet (untuk fetch harga live dari Indodax)
+- OS: Windows, Linux, atau MacOS
+
+---
+
+## 🛠️ Cara Instalasi & Menjalankan Lokal
+
+1. **Clone repository:**
+    ```sh
+    git clone https://github.com/FAYnim/TradingJournal.git
+    cd TradingJournal
+    ```
+
+2. **Install dependencies dengan PNPM:**
+    ```sh
+    pnpm install
+    ```
+
+3. **Jalankan server lokal:**
+    ```sh
+    pnpm start
+    ```
+   Atau jika tidak ada script start, gunakan:
+    ```sh
+    node server.js
+    ```
+
+4. **Akses aplikasi di browser:**
+    ```
+    http://localhost:3000
+    ```
+
+---
+
+## 📂 Struktur Folder & File
+
+```
+TradingJournal/
+├── public/
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   └── js/
+│       ├── api.js
+│       └── ui.js
+├── utils/
+│   └── statsCalculator.js
+├── data/
+│   └── journal.json
+├── server.js
+├── package.json
+├── pnpm-lock.yaml
+└── README.md
+```
+
+---
+
+## 🐞 Troubleshooting
+
+- **Port 3000 sudah digunakan:**  
+  Ubah port di `server.js` atau matikan aplikasi lain yang memakai port tersebut.
+
+- **Error fetch harga Indodax:**  
+  - Pastikan koneksi internet stabil.
+  - Cek apakah endpoint Indodax tidak down/blokir.
+
+- **Data tidak tersimpan:**  
+  - Pastikan folder `data/` ada dan memiliki izin tulis.
+  - Jalankan server dengan hak akses yang cukup.
+
+- **Tidak bisa install pnpm:**  
+  Instal pnpm global:  
+  ```sh
+  npm install -g pnpm
+  ```
+
+- **Perubahan kode tidak muncul di browser:**  
+  Refresh browser, atau restart server jika mengubah kode backend.
+
+---
+
+## 🙌 Credit
+
+**Dibuat oleh:**  
+Faris A. Y.  
+- [Instagram](https://instagram.com/faris.a.y)
+- [Threads](https://threads.net/@faris.a.y)
+- [GitHub](https://github.com/FAYnim)
+
+---
+
+Happy journaling & trading! 🚀
