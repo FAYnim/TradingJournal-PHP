@@ -1,3 +1,5 @@
-data/data.json
-data/riwayat_harga.json
+data/
+
 structure.txt
+
+node_modules/
