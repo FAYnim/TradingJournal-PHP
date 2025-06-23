@@ -1,7 +1,7 @@
 const indodax = require('./indodax-api.js');
 const fs = require('fs'); // Modul untuk urusan file
 
-const NAMA_FILE_JSON = 'data/data-ticker.json';
+const NAMA_FILE_JSON = 'data/data-ticker-2.json';
 
 async function cekHargaBTC() {
   console.log("Mencoba mengambil data harga terbaru...");
@@ -10,13 +10,22 @@ async function cekHargaBTC() {
 
   if (dataBTC) {
     const waktuSekarang = new Date();
-    const hargaTerakhir = Number(dataBTC.last);
+    const last = Number(dataBTC.last);
+    const buy = Number(dataBTC.buy);
+    const sell = Number(dataBTC.sell);
+    const h24 = Number(dataBTC.high);
+    const l24 = Number(dataBTC.low);
+
     
     console.log(`----------------------------------------`);
     console.log(`Update pada: ${waktuSekarang.toLocaleString('id-ID')}`);
-    console.log(`Harga Terakhir BTC: Rp ${hargaTerakhir.toLocaleString('id-ID')}`);
+    console.log(`Harga Terakhir BTC: Rp ${last.toLocaleString('id-ID')}`);
+    console.log(`Harga Beli BTC: Rp ${buy.toLocaleString('id-ID')}`);
+    console.log(`Harga Jual BTC: Rp ${sell.toLocaleString('id-ID')}`);
+    console.log(`Harga Tertinggi 24 BTC: Rp ${h24.toLocaleString('id-ID')}`);
+    console.log(`Harga Terendah 24 BTC: Rp ${l24.toLocaleString('id-ID')}`);
     
-    simpanKeFile(waktuSekarang, hargaTerakhir);
+    simpanKeFile(waktuSekarang, last, buy, sell, h24, l24);
     
     console.log(`----------------------------------------\n`);
   } else {
@@ -24,7 +33,7 @@ async function cekHargaBTC() {
   }
 }
 
-function simpanKeFile(waktu, harga) {
+function simpanKeFile(waktu, current, buy, sell, h24, l24) {
   let riwayatHarga = [];
 
   try {
@@ -38,7 +47,11 @@ function simpanKeFile(waktu, harga) {
   // B. Tambahkan data baru ke dalam daftar
   riwayatHarga.push({
     waktu: waktu.toISOString(), // Simpan dalam format standar
-    harga: harga
+    current: current,
+    buy: buy,
+    sell: sell,
+    h24: h24,
+    l24: l24
   });
 
   // C. Ubah daftar (array) menjadi teks JSON yang rapi
@@ -54,7 +67,7 @@ function simpanKeFile(waktu, harga) {
 
 console.log(`Memulai skrip pemantauan harga BTC/IDR.`);
 console.log(`Data akan disimpan di file: ${NAMA_FILE_JSON}`);
-console.log("Pengecekan akan dilakukan setiap 1 jam.\n");
+console.log("Pengecekan akan dilakukan setiap 15 menit.\n");
 
 cekHargaBTC();
-setInterval(cekHargaBTC, 1000 * 60 * 10); // 10 menit sekali
+setInterval(cekHargaBTC, 1000 * 60 * 15); // 15 menit sekali
