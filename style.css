@@ -90,10 +90,10 @@ h1, h2 {
     margin: 0;
 }
 .sidebar-footer {
-    margin-bottom: 0;
+    /*margin-bottom: 0;*/
     margin-top: 20px;
     padding-top: 20px;
-    padding-bottom: 0;
+    /*padding-bottom: 0;*/
     border-bottom: none;
     border-top: 1px solid var(--border-color);
 }

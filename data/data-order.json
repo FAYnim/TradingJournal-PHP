@@ -22,5 +22,40 @@
     "timestamp": "2025-06-22T01:01:38.646Z",
     "status": "Selesai",
     "final_profit": "-1.817470588235294"
+  },
+  {
+    "pair": "BTCIDR",
+    "entry": "1671000000",
+    "takeProfit": "1661000000",
+    "stopLoss": "1703000000",
+    "timeframe": "1H",
+    "duration": "Short",
+    "id": "db4f7265-6e2c-4425-a48f-f09cead9b9fa",
+    "timestamp": "2025-06-22T13:05:23.547Z",
+    "status": "Batal",
+    "final_profit": "3.2439257929383603"
+  },
+  {
+    "pair": "BTCIDR",
+    "entry": "1671000000",
+    "takeProfit": "1616000000",
+    "stopLoss": "1626000000",
+    "timeframe": "1H",
+    "duration": "Short",
+    "id": "43939c4c-2bf8-42e7-a840-44e93c231536",
+    "timestamp": "2025-06-22T21:43:30.193Z",
+    "status": "Selesai",
+    "final_profit": "3.154997007779772"
+  },
+  {
+    "pair": "BTCIDR",
+    "entry": "1649000000",
+    "takeProfit": "1667000000",
+    "stopLoss": "1616000000",
+    "timeframe": "1H",
+    "duration": "Long",
+    "id": "8104e559-2346-477e-9119-44382015cebe",
+    "timestamp": "2025-06-22T23:03:54.516Z",
+    "status": "Open"
   }
 ]
