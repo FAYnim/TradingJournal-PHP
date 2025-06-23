@@ -1,0 +1,26 @@
+{
+  "summary": {
+    "totalTrades": 50,
+    "wins": 30,
+    "losses": 15,
+    "batal": 5,
+    "totalProfit": 157.25,
+    "winRate": 66.67,
+    "avgWin": 7.8,
+    "avgLoss": -4.5
+  },
+  "performanceByPair": {
+    "BTCIDR": {
+      "profit": 120.5,
+      "trades": 25
+    },
+    "ETHIDR": {
+      "profit": 40.75,
+      "trades": 15
+    },
+    "DOGEIDR": {
+      "profit": -4.0,
+      "trades": 10
+    }
+  }
+}

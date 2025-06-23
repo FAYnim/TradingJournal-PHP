@@ -1,3 +1,5 @@
+// js/api.js
+
 export async function getAllTickers() {
     const url = 'https://indodax.com/api/tickers';
     try {
@@ -27,5 +29,20 @@ export async function updateOrderStatus(id, status, final_profit) {
     } catch (error) {
         console.error('Error saat update status:', error);
         return false;
+    }
+}
+
+// ===== TAMBAHKAN FUNGSI BARU UNTUK MENGAMBIL DATA PORTOFOLIO =====
+export async function getPortfolioData() {
+    try {
+        const response = await fetch('/api/portfolio');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Gagal mengambil data portofolio:", error);
+        // Memberitahu UI bahwa pengambilan data gagal
+        return null;
     }
 }

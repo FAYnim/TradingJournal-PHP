@@ -1,3 +1,73 @@
+import * as api from './api.js';
+
+let portfolioChart = null;
+
+export function displayPortfolioData(data) {
+    const wrapper = document.querySelector('.portofolio-wrapper');
+    const chartCanvas = document.getElementById('portfolioPieChart');
+    if (!wrapper || !chartCanvas) return;
+
+    const summary = data.summary;
+    wrapper.innerHTML = `
+        <div class="portfolio-card">
+            <h3>Total Profit</h3>
+            <p class="value ${summary.totalProfit >= 0 ? 'profit' : 'loss'}">${summary.totalProfit.toFixed(2)}%</p>
+        </div>
+        <div class="portfolio-card">
+            <h3>Win Rate</h3>
+            <p class="value">${summary.winRate.toFixed(2)}%</p>
+            <p>(${summary.wins} menang dari ${summary.wins + summary.losses} trade)</p>
+        </div>
+        <div class="portfolio-card">
+            <h3>Avg. Profit / Loss</h3>
+            <p><span class="profit">${summary.avgWin}%</span> / <span class="loss">${summary.avgLoss}%</span></p>
+        </div>
+    `;
+
+    const ctx = chartCanvas.getContext('2d');
+    
+    if (portfolioChart) {
+        portfolioChart.destroy();
+    }
+    
+    portfolioChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Wins', 'Losses', 'Batal'],
+            datasets: [{
+                label: 'Hasil Trade',
+                data: [summary.wins, summary.losses, summary.batal],
+                backgroundColor: [
+                    '#4CAF50',
+                    '#f44336',
+                    '#757575'
+                ],
+                borderColor: '#2c2c2c',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#e0e0e0'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Distribusi Hasil Trade',
+                    color: '#fff',
+                    font: {
+                        size: 16
+                    }
+                }
+            }
+        }
+    });
+}
+
 export function populateTable(dataArray, targetTableBody, liveTickers) {
     targetTableBody.innerHTML = '';
     dataArray.forEach(entry => {
@@ -62,13 +132,16 @@ export function startRefreshCooldown(refreshBtn) {
     }, 1000);
 }
 
-export function showPage(pageName, elements) {
+export async function showPage(pageName, elements) {
     elements.pageViewOrders.classList.add('hidden');
     elements.pageArchiveOrders.classList.add('hidden');
     elements.pageAddOrder.classList.add('hidden');
+    elements.pagePortfolio.classList.add('hidden');
+
     elements.navView.classList.remove('active');
     elements.navArchive.classList.remove('active');
     elements.navAdd.classList.remove('active');
+    elements.navPortfolio.classList.remove('active');
 
     if (pageName === 'view') {
         elements.pageViewOrders.classList.remove('hidden');
@@ -82,6 +155,13 @@ export function showPage(pageName, elements) {
     } else if (pageName === 'portfolio') {
         elements.pagePortfolio.classList.remove('hidden');
         elements.navPortfolio.classList.add('active');
-	}
-}
 
+        const portfolioData = await api.getPortfolioData();
+        if (portfolioData) {
+            displayPortfolioData(portfolioData);
+        } else {
+            document.querySelector('.portofolio-wrapper').innerHTML = 
+                '<p>Gagal memuat data portofolio.</p>';
+        }
+    }
+}
