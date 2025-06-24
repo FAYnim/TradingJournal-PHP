@@ -1,25 +1,16 @@
-// server.js (versi Express.js yang lebih terstruktur)
-
-// ===== 1. Memanggil Modul yang Dibutuhkan =====
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-// ===== TAMBAHKAN BARIS INI UNTUK MENGIMPOR FUNGSI HELPER =====
 const { calculatePortfolioStats } = require('./utils/statsCalculator');
 
-// ===== 2. Inisialisasi Aplikasi Express =====
 const app = express();
 const PORT = 3000;
 const DATA_FILE = path.join(__dirname, 'data', 'data-order.json');
 
-// ===== 3. Penggunaan Middleware =====
 app.use(express.json()); 
-app.use(express.static(path.join(__dirname, 'public')));  // menjadikan public sebagai directory statis
+app.use(express.static(path.join(__dirname, 'public')));
 
-// ===== 5. Definisi Rute (API Endpoints) =====
-
-// GET: Mengambil semua data order
 app.get('/api/data', (req, res) => {
     fs.readFile(DATA_FILE, 'utf8', (err, data) => {
         if (err) return res.json([]);
@@ -27,15 +18,13 @@ app.get('/api/data', (req, res) => {
     });
 });
 
-// GET: Mengambil data portofolio yang sudah dihitung
-app.get('/api/portfolio', (req, res) => {
+app.get('/api/statistics', (req, res) => {
     fs.readFile(DATA_FILE, 'utf8', (err, data) => {
         if (err) {
             return res.status(500).json({ message: 'Gagal memuat data order' });
         }
         try {
             const allOrders = JSON.parse(data);
-            // Gunakan fungsi yang sudah di-import
             const portfolioData = calculatePortfolioStats(allOrders);
             res.json(portfolioData);
         } catch (parseError) {
@@ -44,7 +33,6 @@ app.get('/api/portfolio', (req, res) => {
     });
 });
 
-// POST: Menambah order baru
 app.post('/api/data', (req, res) => {
     const newData = req.body; 
     newData.id = crypto.randomUUID();
@@ -63,7 +51,6 @@ app.post('/api/data', (req, res) => {
     });
 });
 
-// POST: Memperbarui status order
 app.post('/api/update-status', (req, res) => {
     const { id, status, final_profit } = req.body;
     
@@ -92,7 +79,6 @@ app.post('/api/update-status', (req, res) => {
     });
 });
 
-// ===== 6. Menjalankan Server =====
 app.listen(PORT, () => {
     console.log(`Server Express berjalan di http://localhost:${PORT}`);
     if (!fs.existsSync(DATA_FILE)) {

@@ -30,7 +30,6 @@ function calculatePortfolioStats(orders) {
     return { summary };
 }
 
-// Ekspor fungsi agar bisa di-import di file lain
 module.exports = {
     calculatePortfolioStats
 };

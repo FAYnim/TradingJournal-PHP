@@ -10,11 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
         navView: document.getElementById('nav-view'),
         navArchive: document.getElementById('nav-archive'),
         navAdd: document.getElementById('nav-add'),
-        navPortfolio: document.getElementById('nav-portofolio'),
+        navStatistic: document.getElementById('nav-statistic'),
         pageViewOrders: document.getElementById('page-view-orders'),
         pageArchiveOrders: document.getElementById('page-archive-orders'),
         pageAddOrder: document.getElementById('page-add-order'),
-        pagePortfolio: document.getElementById('page-portfolio'),
+        pageStatistic: document.getElementById('page-statistic'),
         refreshBtn: document.getElementById('refreshBtn'),
         menuToggle: document.getElementById('menu-toggle'),
         sidebar: document.getElementById('sidebar'),
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.navView.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('view', elements); });
     elements.navArchive.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('archive', elements); });
     elements.navAdd.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('add', elements); });
-    elements.navPortfolio.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('portfolio', elements); });
+    elements.navStatistic.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('statistic', elements); });
 
     elements.refreshBtn.addEventListener('click', () => {
         loadJournalData();

@@ -1,4 +1,3 @@
-/* 1. PENGATURAN GLOBAL & VARIABEL WARNA */
 :root {
     --bg-color: #1a1a1a;
     --surface-color: #2c2c2c;
@@ -8,7 +7,6 @@
 }
 
 * {
-    /* Reset dasar browser */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -30,10 +28,7 @@ h1, h2 {
     display: none;
 }
 
-
-/* 2. LAYOUT UTAMA (HEADER, SIDEBAR, KONTEN) */
 .main-header {
-    /* Header tetap di atas */
     background-color: var(--surface-color);
     height: 70px;
     position: fixed;
@@ -54,7 +49,6 @@ h1, h2 {
 }
 
 .sidebar {
-    /* Menu navigasi geser */
     width: 260px;
     background-color: var(--surface-color);
     height: 100vh;
@@ -65,21 +59,18 @@ h1, h2 {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    transform: translateX(-100%); /* Sembunyi di kiri by default */
+    transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
 }
 
 .main-content {
-    /* Area konten utama */
-    margin-top: 70px; /* Jarak dari header */
+    margin-top: 70px;
     padding: 20px;
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
 
-
-/* 3. KOMPONEN DI DALAM SIDEBAR */
 .sidebar-header, .sidebar-footer {
     text-align: center;
     border-bottom: 1px solid var(--border-color);
@@ -90,10 +81,8 @@ h1, h2 {
     margin: 0;
 }
 .sidebar-footer {
-    /*margin-bottom: 0;*/
     margin-top: 20px;
     padding-top: 20px;
-    /*padding-bottom: 0;*/
     border-bottom: none;
     border-top: 1px solid var(--border-color);
 }
@@ -109,7 +98,7 @@ h1, h2 {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex-grow: 1; /* Mendorong footer ke bawah */
+    flex-grow: 1;
 }
 #main-nav a {
     padding: 12px 16px;
@@ -128,8 +117,6 @@ h1, h2 {
     font-weight: bold;
 }
 
-
-/* 4. FORM & TABEL */
 .input-section {
     background-color: var(--surface-color);
     padding: 20px;
@@ -192,8 +179,6 @@ tbody tr:hover {
     background-color: #333;
 }
 
-
-/* 5. KOMPONEN KECIL (BADGE, BUTTON, DLL) */
 #refreshBtn {
     padding: 8px 12px;
     font-size: 0.9em;
@@ -225,10 +210,7 @@ tbody tr:hover {
 .profit { color: #4CAF50; font-weight: bold; }
 .loss { color: #f44336; font-weight: bold; }
 
-
-/* 6. INTERAKSI SIDEBAR & RESPONSIVE */
 .menu-toggle {
-    /* Tombol hamburger */
     z-index: 1001;
     background: transparent;
     border: none;
@@ -245,7 +227,6 @@ tbody tr:hover {
 }
 
 .sidebar-overlay {
-    /* Lapisan gelap di background */
     display: none;
     position: fixed;
     top: 0; left: 0;
@@ -254,49 +235,41 @@ tbody tr:hover {
     z-index: 999;
 }
 
-/* Logika buka/tutup via class di body */
 body.sidebar-open .sidebar {
-    transform: translateX(0); /* Munculkan sidebar */
+    transform: translateX(0);
 }
 body.sidebar-open .sidebar-overlay {
-    display: block; /* Munculkan overlay */
+    display: block;
 }
 
-/* Tampilan di HP */
 @media (max-width: 768px) {
     .main-content {
         padding: 15px;
     }
 }
 
-/* style.css */
-
-/* ... (kode CSS yang sudah ada) ... */
-
-
-/* 7. HALAMAN PORTOFOLIO */
-.chart-section {
+.statistic-section {
     background-color: var(--surface-color);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 30px;
 }
 
-.portofolio-wrapper {
+.statistic-cards-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     margin-top: 20px;
 }
 
-.portfolio-card {
+.statistic-card {
     background-color: var(--bg-color);
     padding: 15px;
     border-radius: 6px;
     border: 1px solid var(--border-color);
 }
 
-.portfolio-card h3 {
+.statistic-card h3 {
     margin-top: 0;
     margin-bottom: 10px;
     color: var(--primary-color);
@@ -304,18 +277,17 @@ body.sidebar-open .sidebar-overlay {
     padding-bottom: 10px;
 }
 
-.portfolio-card p {
+.statistic-card p {
     margin-bottom: 8px;
     font-size: 1.1em;
 }
 
-.portfolio-card .value {
+.statistic-card .value {
     font-weight: bold;
     font-size: 1.3em;
 }
 
-/* Placeholder untuk chart di masa depan */
-.chart-wrapper {
+.statistic-chart-wrapper {
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
     border-radius: 6px;

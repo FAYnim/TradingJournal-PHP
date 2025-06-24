@@ -1,47 +1,45 @@
+// public/js/ui.js (Versi Refactor)
+
 import * as api from './api.js';
 
-let portfolioChart = null;
+let statisticChart = null;
 
-export function displayPortfolioData(data) {
-    const wrapper = document.querySelector('.portofolio-wrapper');
-    const chartCanvas = document.getElementById('portfolioPieChart');
+export function displayStatisticData(data) {
+    const wrapper = document.querySelector('.statistic-cards-wrapper');
+    const chartCanvas = document.getElementById('statisticPieChart');
     if (!wrapper || !chartCanvas) return;
 
     const summary = data.summary;
     wrapper.innerHTML = `
-        <div class="portfolio-card">
+        <div class="statistic-card">
             <h3>Total Profit</h3>
             <p class="value ${summary.totalProfit >= 0 ? 'profit' : 'loss'}">${summary.totalProfit.toFixed(2)}%</p>
         </div>
-        <div class="portfolio-card">
+        <div class="statistic-card">
             <h3>Win Rate</h3>
             <p class="value">${summary.winRate.toFixed(2)}%</p>
             <p>(${summary.wins} menang dari ${summary.wins + summary.losses} trade)</p>
         </div>
-        <div class="portfolio-card">
+        <div class="statistic-card">
             <h3>Avg. Profit / Loss</h3>
-            <p><span class="profit">${summary.avgWin}%</span> / <span class="loss">${summary.avgLoss}%</span></p>
+            <p><span class="profit">${summary.avgWin.toFixed(2)}%</span> / <span class="loss">${summary.avgLoss.toFixed(2)}%</span></p>
         </div>
     `;
 
     const ctx = chartCanvas.getContext('2d');
     
-    if (portfolioChart) {
-        portfolioChart.destroy();
+    if (statisticChart) {
+        statisticChart.destroy();
     }
     
-    portfolioChart = new Chart(ctx, {
+    statisticChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: ['Wins', 'Losses', 'Batal'],
             datasets: [{
                 label: 'Hasil Trade',
                 data: [summary.wins, summary.losses, summary.batal],
-                backgroundColor: [
-                    '#4CAF50',
-                    '#f44336',
-                    '#757575'
-                ],
+                backgroundColor: ['#4CAF50', '#f44336', '#757575'],
                 borderColor: '#2c2c2c',
                 borderWidth: 3
             }]
@@ -49,20 +47,8 @@ export function displayPortfolioData(data) {
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#e0e0e0'
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Distribusi Hasil Trade',
-                    color: '#fff',
-                    font: {
-                        size: 16
-                    }
-                }
+                legend: { position: 'top', labels: { color: '#e0e0e0' } },
+                title: { display: true, text: 'Distribusi Hasil Trade', color: '#fff', font: { size: 16 } }
             }
         }
     });
@@ -96,12 +82,9 @@ export function populateTable(dataArray, targetTableBody, liveTickers) {
             if (currentTicker) {
                 const entryPrice = parseFloat(entry.entry);
                 const livePrice = parseFloat(currentTicker.last);
-                let percentage = 0;
-                if (entry.duration === 'Long') {
-                    percentage = ((livePrice - entryPrice) / entryPrice) * 100;
-                } else {
-                    percentage = ((entryPrice - livePrice) / entryPrice) * 100;
-                }
+                let percentage = (entry.duration === 'Long')
+                    ? ((livePrice - entryPrice) / entryPrice) * 100
+                    : ((entryPrice - livePrice) / entryPrice) * 100;
                 liveProfitPercentage = percentage;
                 const colorClass = percentage >= 0 ? 'profit' : 'loss';
                 profitCellHTML = `<span class="${colorClass}">${percentage.toFixed(2)}%</span>`;
@@ -136,12 +119,12 @@ export async function showPage(pageName, elements) {
     elements.pageViewOrders.classList.add('hidden');
     elements.pageArchiveOrders.classList.add('hidden');
     elements.pageAddOrder.classList.add('hidden');
-    elements.pagePortfolio.classList.add('hidden');
+    elements.pageStatistic.classList.add('hidden');
 
     elements.navView.classList.remove('active');
     elements.navArchive.classList.remove('active');
     elements.navAdd.classList.remove('active');
-    elements.navPortfolio.classList.remove('active');
+    elements.navStatistic.classList.remove('active');
 
     if (pageName === 'view') {
         elements.pageViewOrders.classList.remove('hidden');
@@ -152,16 +135,16 @@ export async function showPage(pageName, elements) {
     } else if (pageName === 'add') {
         elements.pageAddOrder.classList.remove('hidden');
         elements.navAdd.classList.add('active');
-    } else if (pageName === 'portfolio') {
-        elements.pagePortfolio.classList.remove('hidden');
-        elements.navPortfolio.classList.add('active');
+    } else if (pageName === 'statistic') {
+        elements.pageStatistic.classList.remove('hidden');
+        elements.navStatistic.classList.add('active');
 
-        const portfolioData = await api.getPortfolioData();
-        if (portfolioData) {
-            displayPortfolioData(portfolioData);
+        const statisticData = await api.getStatisticsData();
+        if (statisticData) {
+            displayStatisticData(statisticData);
         } else {
-            document.querySelector('.portofolio-wrapper').innerHTML = 
-                '<p>Gagal memuat data portofolio.</p>';
+            document.querySelector('.statistic-cards-wrapper').innerHTML = 
+                '<p>Gagal memuat data statistik.</p>';
         }
     }
 }

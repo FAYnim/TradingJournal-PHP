@@ -58,5 +58,16 @@
     "timestamp": "2025-06-22T23:03:54.516Z",
     "status": "Selesai",
     "final_profit": "1.2073984232868404"
+  },
+  {
+    "pair": "DOGEIDR",
+    "entry": "2673",
+    "takeProfit": "2780",
+    "stopLoss": "2582",
+    "timeframe": "1H",
+    "duration": "Long",
+    "id": "9f1efc43-823f-473b-9ce7-409d7802cacc",
+    "timestamp": "2025-06-23T22:17:14.243Z",
+    "status": "Open"
   }
 ]
