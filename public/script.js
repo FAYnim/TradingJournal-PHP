@@ -14,10 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         navArchive: document.getElementById('nav-archive'),
         navAdd: document.getElementById('nav-add'),
         navStatistic: document.getElementById('nav-statistic'),
+        navSetup: document.getElementById('nav-setup'),
         pageViewOrders: document.getElementById('page-view-orders'),
         pageArchiveOrders: document.getElementById('page-archive-orders'),
         pageAddOrder: document.getElementById('page-add-order'),
         pageStatistic: document.getElementById('page-statistic'),
+        pageSetup: document.getElementById('page-setup'),
         refreshBtn: document.getElementById('refreshBtn'),
         menuToggle: document.getElementById('menu-toggle'),
         sidebar: document.getElementById('sidebar'),
@@ -83,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.navArchive.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('archive', elements); });
     elements.navAdd.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('add', elements); });
     elements.navStatistic.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('statistic', elements); });
+    elements.navSetup.addEventListener('click', (e) => { e.preventDefault(); ui.showPage('setup', elements); });
 
     // Menambahkan event listener ke tombol refresh.
     elements.refreshBtn.addEventListener('click', () => {
@@ -136,6 +139,71 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             // Menangani error saat pengiriman data.
             console.error('Error saat mengirim data:', error);
+        }
+    });
+
+    // Event listener untuk halaman setup
+    elements.pageSetup.addEventListener('click', async (e) => {
+        const plansContainer = document.getElementById('setup-plans-container');
+
+        // Tambah Rencana Baru
+        if (e.target.id === 'add-plan-btn') {
+            const newPlan = {
+                id: `plan-${Date.now()}`,
+                title: 'Rencana Baru',
+                conditions: []
+            };
+            const planCard = ui.createPlanCard(newPlan); // Asumsi createPlanCard ada di UI
+            plansContainer.appendChild(planCard);
+        }
+
+        // Hapus Rencana
+        if (e.target.classList.contains('delete-plan-btn')) {
+            e.target.closest('.plan-card').remove();
+        }
+
+        // Tambah Kondisi Baru
+        if (e.target.classList.contains('add-condition-btn')) {
+            const newCondition = {
+                id: `cond-${Date.now()}`,
+                text: 'Kondisi baru',
+                checked: false
+            };
+            const conditionList = e.target.previousElementSibling;
+            const conditionItem = ui.createConditionItem(newCondition); // Asumsi createConditionItem ada di UI
+            conditionList.appendChild(conditionItem);
+        }
+
+        // Hapus Kondisi
+        if (e.target.classList.contains('delete-condition-btn')) {
+            e.target.closest('.condition-item').remove();
+        }
+        
+        // Simpan Semua Perubahan
+        if (e.target.id === 'save-plans-btn') {
+            const plans = [];
+            document.querySelectorAll('.plan-card').forEach(card => {
+                const plan = {
+                    id: card.dataset.planId,
+                    title: card.querySelector('.plan-title').value,
+                    conditions: []
+                };
+                card.querySelectorAll('.condition-item').forEach(item => {
+                    plan.conditions.push({
+                        id: item.dataset.conditionId,
+                        text: item.querySelector('.condition-text').value,
+                        checked: item.querySelector('input[type="checkbox"]').checked
+                    });
+                });
+                plans.push(plan);
+            });
+
+            const success = await api.saveSetupPlans(plans);
+            if (success) {
+                alert('Checklist rencana berhasil disimpan!');
+            } else {
+                alert('Gagal menyimpan checklist.');
+            }
         }
     });
 

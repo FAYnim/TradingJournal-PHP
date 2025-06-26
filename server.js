@@ -15,6 +15,7 @@ const app = express();
 const PORT = 3000;
 // Menentukan path absolut ke file `data-order.json` untuk menyimpan data order.
 const DATA_FILE = path.join(__dirname, 'data', 'data-order.json');
+const SETUP_PLANS_FILE = path.join(__dirname, 'data', 'setup-plans.json');
 
 // Middleware untuk mem-parsing body request yang masuk sebagai JSON.
 app.use(express.json()); 
@@ -128,6 +129,30 @@ app.post('/api/update-status', (req, res) => {
     });
 });
 
+// Endpoint untuk mengambil semua setup plan
+app.get('/api/setup-plans', (req, res) => {
+    fs.readFile(SETUP_PLANS_FILE, 'utf8', (err, data) => {
+        if (err) {
+            if (err.code === 'ENOENT') return res.json([]); // File tidak ada, kembalikan array kosong
+            return res.status(500).json({ message: 'Gagal membaca data setup.' });
+        }
+        try {
+            res.json(JSON.parse(data));
+        } catch (parseError) {
+            res.json([]); // Jika file kosong atau rusak, kembalikan array kosong
+        }
+    });
+});
+
+// Endpoint untuk menyimpan semua setup plan
+app.post('/api/setup-plans', (req, res) => {
+    const plans = req.body;
+    fs.writeFile(SETUP_PLANS_FILE, JSON.stringify(plans, null, 2), (err) => {
+        if (err) return res.status(500).json({ message: 'Gagal menyimpan data setup.' });
+        res.json({ message: 'Setup plan berhasil disimpan' });
+    });
+});
+
 // Menjalankan server pada port yang telah ditentukan.
 app.listen(PORT, () => {
     // Menampilkan pesan di konsol bahwa server sedang berjalan.
@@ -138,5 +163,9 @@ app.listen(PORT, () => {
         fs.writeFileSync(DATA_FILE, '[]', 'utf8');
         // Menampilkan pesan di konsol bahwa file berhasil dibuat.
         console.log('File data-order.json berhasil dibuat.');
+    }
+    if (!fs.existsSync(SETUP_PLANS_FILE)) {
+        fs.writeFileSync(SETUP_PLANS_FILE, '[]', 'utf8');
+        console.log('File setup-plans.json berhasil dibuat.');
     }
 });

@@ -62,3 +62,37 @@ export async function getStatisticsData() {
         return null;
     }
 }
+
+// Fungsi async untuk mengambil setup plans dari server
+export async function getSetupPlans() {
+    try {
+        const response = await fetch('/api/setup-plans');
+        if (!response.ok) {
+            throw new Error('Gagal mengambil data setup plans');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error di getSetupPlans:', error);
+        alert('Gagal memuat data checklist setup.');
+        return [];
+    }
+}
+
+// Fungsi async untuk menyimpan setup plans ke server
+export async function saveSetupPlans(plans) {
+    try {
+        const response = await fetch('/api/setup-plans', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(plans)
+        });
+        if (!response.ok) {
+            throw new Error('Gagal menyimpan data setup plans');
+        }
+        return true;
+    } catch (error) {
+        console.error('Error di saveSetupPlans:', error);
+        alert('Gagal menyimpan checklist setup.');
+        return false;
+    }
+}

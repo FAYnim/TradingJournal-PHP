@@ -156,12 +156,14 @@ export async function showPage(pageName, elements) {
     elements.pageArchiveOrders.classList.add('hidden');
     elements.pageAddOrder.classList.add('hidden');
     elements.pageStatistic.classList.add('hidden');
+    elements.pageSetup.classList.add('hidden');
 
     // Menghapus kelas 'active' dari semua item navigasi.
     elements.navView.classList.remove('active');
     elements.navArchive.classList.remove('active');
     elements.navAdd.classList.remove('active');
     elements.navStatistic.classList.remove('active');
+    elements.navSetup.classList.remove('active');
 
     // Menampilkan halaman dan mengaktifkan item navigasi yang sesuai.
     if (pageName === 'view') {
@@ -186,5 +188,62 @@ export async function showPage(pageName, elements) {
             document.querySelector('.statistic-cards-wrapper').innerHTML = 
                 '<p>Gagal memuat data statistik.</p>';
         }
+    } else if (pageName === 'setup') {
+        elements.pageSetup.classList.remove('hidden');
+        elements.navSetup.classList.add('active');
+        // Memuat dan menampilkan data setup plan
+        const plans = await api.getSetupPlans();
+        displaySetupPlans(plans);
     }
+}
+
+// Fungsi untuk menampilkan semua setup plans
+export function displaySetupPlans(plans) {
+    const container = document.getElementById('setup-plans-container');
+    container.innerHTML = '';
+    if (plans.length === 0) {
+        container.innerHTML = '<p>Belum ada rencana trading. Klik tombol "+ Tambah Rencana" untuk memulai.</p>';
+    }
+    plans.forEach(plan => {
+        const planCard = createPlanCard(plan);
+        container.appendChild(planCard);
+    });
+}
+
+// Fungsi untuk membuat satu kartu rencana (plan card)
+export function createPlanCard(plan) {
+    const card = document.createElement('div');
+    card.className = 'plan-card';
+    card.dataset.planId = plan.id;
+
+    card.innerHTML = `
+        <div class="plan-header">
+            <input type="text" class="plan-title" value="${plan.title}">
+            <div class="plan-actions">
+                <button class="delete-plan-btn">🗑️</button>
+            </div>
+        </div>
+        <div class="plan-body">
+            <ul class="condition-list">
+                ${plan.conditions.map(cond => createConditionItem(cond).outerHTML).join('')}
+            </ul>
+            <button class="add-condition-btn">+ Tambah Kondisi</button>
+        </div>
+    `;
+
+    return card;
+}
+
+// Fungsi untuk membuat satu item kondisi (condition item)
+export function createConditionItem(condition) {
+    const li = document.createElement('li');
+    li.className = 'condition-item';
+    li.dataset.conditionId = condition.id;
+
+    li.innerHTML = `
+        <input type="checkbox" ${condition.checked ? 'checked' : ''}>
+        <input type="text" class="condition-text" value="${condition.text}">
+        <button class="delete-condition-btn">❌</button>
+    `;
+    return li;
 }
