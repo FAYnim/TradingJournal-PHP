@@ -1,76 +1,86 @@
+/* Mendefinisikan variabel global (CSS Custom Properties) untuk tema warna */
 :root {
-    --bg-color: #1a1a1a;
-    --surface-color: #2c2c2c;
-    --primary-color: #4CAF50;
-    --text-color: #e0e0e0;
-    --border-color: #444;
+    --bg-color: #1a1a1a; /* Warna latar belakang utama */
+    --surface-color: #2c2c2c; /* Warna untuk permukaan seperti header, sidebar, kartu */
+    --primary-color: #4CAF50; /* Warna utama untuk aksen, tombol, dan link aktif */
+    --text-color: #e0e0e0; /* Warna teks utama */
+    --border-color: #444; /* Warna untuk border/garis pemisah */
 }
 
+/* Reset default margin, padding, dan box-sizing untuk semua elemen */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Styling dasar untuk body */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Menggunakan font sistem modern */
     background-color: var(--bg-color);
     color: var(--text-color);
-    line-height: 1.6;
+    line-height: 1.6; /* Jarak antar baris untuk keterbacaan */
 }
 
+/* Styling untuk heading h1 dan h2 */
 h1, h2 {
     margin-bottom: 20px;
-    color: #fff;
+    color: #fff; /* Warna putih untuk kontras */
 }
 
+/* Kelas utilitas untuk menyembunyikan elemen */
 .hidden {
     display: none;
 }
 
+/* Styling untuk header utama */
 .main-header {
     background-color: var(--surface-color);
     height: 70px;
-    position: fixed;
+    position: fixed; /* Tetap di posisi saat scroll */
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 900;
+    z-index: 900; /* Tampil di atas konten lain */
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: center; /* Vertikal di tengah */
+    justify-content: space-between; /* Menyebar item (judul dan tombol menu) */
     padding: 0 20px;
     border-bottom: 1px solid var(--border-color);
 }
 
+/* Styling untuk judul di header */
 .header-title {
     font-size: 1.5em;
-    margin: 0;
+    margin: 0; /* Menghapus margin default dari h1 */
 }
 
+/* Styling untuk sidebar */
 .sidebar {
     width: 260px;
     background-color: var(--surface-color);
-    height: 100vh;
+    height: 100vh; /* Tinggi penuh viewport */
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 1000; /* Tampil di atas header */
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Susun item secara vertikal */
     padding: 20px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%); /* Sembunyikan di luar layar ke kiri */
+    transition: transform 0.3s ease-in-out; /* Animasi transisi saat muncul/hilang */
 }
 
+/* Styling untuk konten utama */
 .main-content {
-    margin-top: 70px;
+    margin-top: 70px; /* Memberi ruang untuk header fixed */
     padding: 20px;
-    max-width: 900px;
-    margin-left: auto;
+    max-width: 900px; /* Lebar maksimum konten */
+    margin-left: auto; /* Pusatkan konten */
     margin-right: auto;
 }
 
+/* Styling untuk header dan footer di dalam sidebar */
 .sidebar-header, .sidebar-footer {
     text-align: center;
     border-bottom: 1px solid var(--border-color);
@@ -83,8 +93,8 @@ h1, h2 {
 .sidebar-footer {
     margin-top: 20px;
     padding-top: 20px;
-    border-bottom: none;
-    border-top: 1px solid var(--border-color);
+    border-bottom: none; /* Hapus border bawah di footer */
+    border-top: 1px solid var(--border-color); /* Tambah border atas di footer */
 }
 .sidebar-footer a {
     color: var(--primary-color);
@@ -94,29 +104,31 @@ h1, h2 {
     text-decoration: underline;
 }
 
+/* Styling untuk navigasi utama di sidebar */
 #main-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    flex-grow: 1;
+    gap: 10px; /* Jarak antar link navigasi */
+    flex-grow: 1; /* Mengisi ruang yang tersedia */
 }
 #main-nav a {
     padding: 12px 16px;
     text-decoration: none;
     color: var(--text-color);
     border-radius: 4px;
-    border: 1px solid transparent;
+    border: 1px solid transparent; /* Border transparan untuk menjaga layout */
     transition: all 0.2s;
 }
 #main-nav a:hover {
     background-color: var(--bg-color);
 }
 #main-nav a.active {
-    border-color: var(--primary-color);
+    border-color: var(--primary-color); /* Border dengan warna primer saat aktif */
     color: var(--primary-color);
     font-weight: bold;
 }
 
+/* Styling untuk section input form */
 .input-section {
     background-color: var(--surface-color);
     padding: 20px;
@@ -124,8 +136,8 @@ h1, h2 {
     margin-bottom: 30px;
 }
 form {
-    display: grid;
-    gap: 15px;
+    display: grid; /* Menggunakan grid layout untuk form */
+    gap: 15px; /* Jarak antar elemen form */
 }
 input, select {
     width: 100%;
@@ -137,8 +149,8 @@ input, select {
     font-size: 1em;
 }
 input:focus, select:focus {
-    outline: none;
-    border-color: var(--primary-color);
+    outline: none; /* Hapus outline default */
+    border-color: var(--primary-color); /* Ubah warna border saat fokus */
 }
 button[type="submit"] {
     padding: 12px;
@@ -150,35 +162,38 @@ button[type="submit"] {
     transition: background-color 0.2s;
 }
 button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #45a049; /* Warna sedikit lebih gelap saat hover */
 }
 
+/* Styling untuk header tabel */
 .table-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+/* Wrapper untuk tabel agar bisa di-scroll horizontal jika perlu */
 .table-wrapper {
     overflow-x: auto;
 }
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; /* Menyatukan border sel */
     margin-top: 10px;
 }
 th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
-    vertical-align: middle;
+    vertical-align: middle; /* Pusatkan konten sel secara vertikal */
 }
 thead {
     background-color: var(--surface-color);
 }
 tbody tr:hover {
-    background-color: #333;
+    background-color: #333; /* Warna latar saat baris di-hover */
 }
 
+/* Styling untuk tombol refresh */
 #refreshBtn {
     padding: 8px 12px;
     font-size: 0.9em;
@@ -189,29 +204,34 @@ tbody tr:hover {
     cursor: pointer;
 }
 #refreshBtn:hover { background-color: #333; }
-#refreshBtn:disabled { cursor: not-allowed; opacity: 0.5; }
+#refreshBtn:disabled { cursor: not-allowed; opacity: 0.5; } /* Style saat tombol dinonaktifkan */
 
+/* Styling untuk tumpukan harga (Entry, TP, SL) */
 .price-stack { display: flex; flex-direction: column; gap: 4px; }
 .price-item { padding: 4px 8px; border-radius: 4px; font-size: 0.9em; color: white; font-weight: 500; }
-.price-entry { background-color: #2196F3; }
-.price-tp { background-color: #4CAF50; }
-.price-sl { background-color: #f44336; }
+.price-entry { background-color: #2196F3; } /* Biru */
+.price-tp { background-color: #4CAF50; } /* Hijau */
+.price-sl { background-color: #f44336; } /* Merah */
 
+/* Styling untuk badge status */
 .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; color: #fff; display: inline-block; }
-.status-open { background-color: #ff9800; }
-.status-selesai { background-color: #4CAF50; }
-.status-batal { background-color: #757575; }
+.status-open { background-color: #ff9800; } /* Oranye */
+.status-selesai { background-color: #4CAF50; } /* Hijau */
+.status-batal { background-color: #757575; } /* Abu-abu */
 
+/* Styling untuk tombol aksi di dalam tabel */
 .action-buttons { display: flex; gap: 5px; }
 .action-btn { padding: 4px 8px; font-size: 0.8em; border: none; border-radius: 4px; cursor: pointer; color: white; }
-.btn-selesai { background-color: #2196F3; }
-.btn-batal { background-color: #f44336; }
+.btn-selesai { background-color: #2196F3; } /* Biru */
+.btn-batal { background-color: #f44336; } /* Merah */
 
+/* Kelas utilitas untuk warna teks profit dan loss */
 .profit { color: #4CAF50; font-weight: bold; }
 .loss { color: #f44336; font-weight: bold; }
 
+/* Styling untuk tombol menu (hamburger) */
 .menu-toggle {
-    z-index: 1001;
+    z-index: 1001; /* Tampil di atas sidebar */
     background: transparent;
     border: none;
     width: 40px;
@@ -223,31 +243,35 @@ tbody tr:hover {
     width: 20px;
     height: 2px;
     background-color: var(--text-color);
-    margin: 4px auto;
+    margin: 4px auto; /* Membuat garis-garis hamburger */
 }
 
+/* Styling untuk overlay sidebar */
 .sidebar-overlay {
-    display: none;
+    display: none; /* Sembunyi secara default */
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.5); /* Latar belakang semi-transparan */
+    z-index: 999; /* Tampil di bawah sidebar tapi di atas konten */
 }
 
+/* Aturan yang berlaku saat sidebar terbuka (body memiliki kelas .sidebar-open) */
 body.sidebar-open .sidebar {
-    transform: translateX(0);
+    transform: translateX(0); /* Munculkan sidebar */
 }
 body.sidebar-open .sidebar-overlay {
-    display: block;
+    display: block; /* Tampilkan overlay */
 }
 
+/* Media query untuk layar dengan lebar maksimal 768px (tablet/ponsel) */
 @media (max-width: 768px) {
     .main-content {
-        padding: 15px;
+        padding: 15px; /* Kurangi padding di layar kecil */
     }
 }
 
+/* Styling untuk section statistik */
 .statistic-section {
     background-color: var(--surface-color);
     padding: 20px;
@@ -255,13 +279,15 @@ body.sidebar-open .sidebar-overlay {
     margin-bottom: 30px;
 }
 
+/* Wrapper untuk kartu-kartu statistik */
 .statistic-cards-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Layout grid responsif */
     gap: 20px;
     margin-top: 20px;
 }
 
+/* Styling untuk setiap kartu statistik */
 .statistic-card {
     background-color: var(--bg-color);
     padding: 15px;
@@ -287,6 +313,7 @@ body.sidebar-open .sidebar-overlay {
     font-size: 1.3em;
 }
 
+/* Wrapper untuk chart statistik */
 .statistic-chart-wrapper {
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
@@ -295,5 +322,5 @@ body.sidebar-open .sidebar-overlay {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: #666; /* Warna teks placeholder jika chart tidak ada */
 }
