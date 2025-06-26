@@ -202,7 +202,7 @@ export function displaySetupPlans(plans) {
     const container = document.getElementById('setup-plans-container');
     container.innerHTML = '';
     if (plans.length === 0) {
-        container.innerHTML = '<p>Belum ada rencana trading. Klik tombol "+ Tambah Rencana" untuk memulai.</p>';
+        container.innerHTML = '<p>Belum ada rencana trading. Klik tombol "<i class="fas fa-plus"></i> Tambah" untuk memulai.</p>';
     }
     plans.forEach(plan => {
         const planCard = createPlanCard(plan);
