@@ -247,3 +247,24 @@ export function createConditionItem(condition) {
     `;
     return li;
 }
+
+// Fungsi untuk menampilkan animasi loading
+export function showLoading(pageId) {
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.add('loading');
+        page.insertAdjacentHTML('beforeend', '<div class="loading-overlay"><i class="fas fa-spinner fa-spin"></i></div>');
+    }
+}
+
+// Fungsi untuk menyembunyikan animasi loading
+export function hideLoading(pageId) {
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.remove('loading');
+        const overlay = page.querySelector('.loading-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+}

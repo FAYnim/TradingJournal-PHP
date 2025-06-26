@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadJournalData() {
         // Mengubah teks tombol refresh menjadi 'Memuat...' sebagai indikator.
         elements.refreshBtn.textContent = 'Memuat...';
+        ui.showLoading('page-view-orders');
+        ui.showLoading('page-archive-orders');
         try {
             // Mengambil data order dari endpoint /api/data.
             const journalResponse = await fetch('/api/data');
@@ -60,13 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Memisahkan data menjadi order aktif dan order yang diarsip.
             const activeOrders = [];
-            const archivedOrders = [];
+            let archivedOrders = [];
 
             allJournalData.forEach(order => {
                 if (order.status === 'Open') activeOrders.push(order);
                 else archivedOrders.push(order);
             });
             
+            // Tampilkan hanya 10 order arsip terakhir
+            archivedOrders = archivedOrders.slice(-10);
+
             // Memanggil fungsi populateTable dari modul ui untuk menampilkan data di tabel.
             // Data dibalik (reverse) agar entri terbaru muncul di atas.
             ui.populateTable(activeOrders.reverse(), elements.tableBody, liveTickers);
@@ -77,6 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Gagal memuat data jurnal:', error);
             elements.tableBody.innerHTML = '<tr><td colspan="9">Gagal memuat data.</td></tr>';
             elements.archiveTableBody.innerHTML = '<tr><td colspan="9">Gagal memuat data.</td></tr>';
+        } finally {
+            ui.hideLoading('page-view-orders');
+            ui.hideLoading('page-archive-orders');
         }
     }
 
