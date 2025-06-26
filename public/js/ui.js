@@ -124,7 +124,7 @@ export function populateTable(dataArray, targetTableBody, liveTickers) {
         let actionHTML = '';
         // Jika status order masih 'Open', tampilkan tombol 'Selesai' dan 'Batal'.
         if (status === 'Open') {
-            actionHTML = `<div class="action-buttons"><button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai" data-profit="${liveProfitPercentage}">Selesai</button><button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal" data-profit="${liveProfitPercentage}">Batal</button></div>`;
+            actionHTML = `<div class="action-buttons"><button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai" data-profit="${liveProfitPercentage}"><i class="fas fa-check"></i> Selesai</button><button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal" data-profit="${liveProfitPercentage}"><i class="fas fa-times"></i> Batal</button></div>`;
         }
         
         // Mengisi baris dengan semua data yang telah diformat.
@@ -220,14 +220,14 @@ export function createPlanCard(plan) {
         <div class="plan-header">
             <input type="text" class="plan-title" value="${plan.title}">
             <div class="plan-actions">
-                <button class="delete-plan-btn">🗑️</button>
+                <button class="delete-plan-btn"><i class="fas fa-trash-alt"></i></button>
             </div>
         </div>
         <div class="plan-body">
             <ul class="condition-list">
                 ${plan.conditions.map(cond => createConditionItem(cond).outerHTML).join('')}
             </ul>
-            <button class="add-condition-btn">+ Tambah Kondisi</button>
+            <button class="add-condition-btn"><i class="fas fa-plus"></i> Tambah Kondisi</button>
         </div>
     `;
 
@@ -243,7 +243,7 @@ export function createConditionItem(condition) {
     li.innerHTML = `
         <input type="checkbox" ${condition.checked ? 'checked' : ''}>
         <input type="text" class="condition-text" value="${condition.text}">
-        <button class="delete-condition-btn">❌</button>
+        <button class="delete-condition-btn"><i class="fas fa-times"></i></button>
     `;
     return li;
 }

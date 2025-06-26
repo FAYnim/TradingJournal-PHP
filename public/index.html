@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Judul halaman yang akan tampil di tab browser -->
     <title>Jurnal Trading</title>
+    <!-- Menghubungkan Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <!-- Menghubungkan file CSS eksternal untuk styling -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -35,15 +37,15 @@
         <!-- Navigasi utama -->
         <nav id="main-nav">
             <!-- Link navigasi untuk melihat riwayat order aktif -->
-            <a href="#" id="nav-view" class="active">Riwayat Aktif</a>
+            <a href="#" id="nav-view" class="active"><i class="fas fa-history"></i> Riwayat Aktif</a>
             <!-- Link navigasi untuk melihat arsip order -->
-            <a href="#" id="nav-archive">Arsip</a>
+            <a href="#" id="nav-archive"><i class="fas fa-archive"></i> Arsip</a>
             <!-- Link navigasi untuk menambah order baru -->
-            <a href="#" id="nav-add">Tambah Order</a>
+            <a href="#" id="nav-add"><i class="fas fa-plus-circle"></i> Tambah Order</a>
             <!-- Link navigasi untuk melihat statistik trading -->
-            <a href="#" id="nav-statistic">Statistik</a>
+            <a href="#" id="nav-statistic"><i class="fas fa-chart-pie"></i> Statistik</a>
             <!-- Link navigasi untuk Setup -->
-            <a href="#" id="nav-setup">Setup</a>
+            <a href="#" id="nav-setup"><i class="fas fa-cogs"></i> Setup</a>
         </nav>
         <!-- Footer di dalam sidebar -->
         <div class="sidebar-footer">
@@ -99,7 +101,7 @@
                 <div class="table-header">
                     <h2>Riwayat Order Aktif</h2>
                     <!-- Tombol untuk me-refresh data harga terkini -->
-                    <button id="refreshBtn">Refresh Harga</button>
+                    <button id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh Harga</button>
                 </div>
                 <div class="table-wrapper">
                     <!-- Tabel untuk menampilkan data order aktif -->
@@ -172,12 +174,12 @@
         <div id="page-setup" class="page-content hidden">
             <section class="setup-section">
                 <div class="setup-header">
-                    <h2>Checklist Rencana Trading</h2>
-                    <button id="add-plan-btn" class="btn-primary">+ Tambah Rencana</button>
+                    <h2>Setup Trading</h2>
+                    <button id="add-plan-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah</button>
                 </div>
                 <div id="setup-plans-container"></div>
                 <div class="setup-actions">
-                    <button id="save-plans-btn">Simpan Semua Perubahan</button>
+                    <button id="save-plans-btn"><i class="fas fa-save"></i> Simpan Perubahan</button>
                 </div>
             </section>
         </div>
