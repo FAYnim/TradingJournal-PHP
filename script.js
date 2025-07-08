@@ -21,7 +21,7 @@ $(document).ready(function() {
     const api = {
         _ajax: function(action, method, data) {
             return $.ajax({
-                url: `index.php?action=${action}`,
+                url: `dashboard.php?action=${action}`,
                 type: method,
                 contentType: 'application/json',
                 data: data ? JSON.stringify(data) : null,
