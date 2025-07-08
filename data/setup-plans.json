@@ -1,0 +1,23 @@
+[
+  {
+    "id": "plan-1750916301291",
+    "title": "Buy",
+    "conditions": [
+      {
+        "id": "cond-1750916303425",
+        "text": "MA 50 > MA 200",
+        "checked": false
+      },
+      {
+        "id": "cond-1750916318840",
+        "text": "Berada di support",
+        "checked": false
+      },
+      {
+        "id": "cond-1750916328207",
+        "text": "RSI > 70",
+        "checked": false
+      }
+    ]
+  }
+]
