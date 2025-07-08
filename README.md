@@ -6,19 +6,16 @@ Aplikasi **Jurnal Trading** berbasis web untuk mencatat, memantau, dan menganali
 
 ## 🚀 Tech Stack
 
-- **Frontend:** HTML5, CSS3, JavaScript (ES6 Modules), Chart.js
-- **Backend:** Node.js (Express)
+- **Frontend:** HTML5, CSS3, JavaScript (jQuery, Chart.js)
+- **Backend:** PHP (Native)
 - **Database:** JSON file (default, bisa dikembangkan)
 - **API Market Data:** [Indodax Public API](https://indodax.com/downloads/BITCOINCOID-API-DOCUMENTATION.pdf)
-- **Package Manager:** [pnpm](https://pnpm.io/)
-
 
 ---
 
 ## 📋 Requirements
 
-- Node.js v16 atau lebih baru
-- pnpm (alternatif: npm/yarn, namun pnpm direkomendasikan)
+- PHP 7.4 atau lebih baru
 - Koneksi internet (untuk fetch harga live dari Indodax)
 - OS: Windows, Linux, atau MacOS
 
@@ -32,23 +29,15 @@ Aplikasi **Jurnal Trading** berbasis web untuk mencatat, memantau, dan menganali
     cd TradingJournal
     ```
 
-2. **Install dependencies dengan PNPM:**
+2. **Jalankan server lokal:**
+    Buka terminal di direktori proyek dan jalankan perintah berikut:
     ```sh
-    pnpm install
+    php -S localhost:8000
     ```
 
-3. **Jalankan server lokal:**
-    ```sh
-    pnpm start
+3. **Akses aplikasi di browser:**
     ```
-   Atau jika tidak ada script start, gunakan:
-    ```sh
-    node server.js
-    ```
-
-4. **Akses aplikasi di browser:**
-    ```
-    http://localhost:3000
+    http://localhost:8000
     ```
 
 ---
@@ -57,20 +46,14 @@ Aplikasi **Jurnal Trading** berbasis web untuk mencatat, memantau, dan menganali
 
 ```
 TradingJournal/
-├── public/
-│   ├── index.html
-│   ├── style.css
-│   ├── script.js
-│   └── js/
-│       ├── api.js
-│       └── ui.js
-├── utils/
-│   └── statsCalculator.js
 ├── data/
-│   └── journal.json
-├── server.js
-├── package.json
-├── pnpm-lock.yaml
+│   ├── data-order.json
+│   └── setup-plans.json
+├── utils/
+│   └── statsCalculator.php
+├── index.php
+├── script.js
+├── style.css
 └── README.md
 ```
 
@@ -78,25 +61,20 @@ TradingJournal/
 
 ## 🐞 Troubleshooting
 
-- **Port 3000 sudah digunakan:**  
-  Ubah port di `server.js` atau matikan aplikasi lain yang memakai port tersebut.
+- **Port 8000 sudah digunakan:**  
+  Gunakan port lain (misal: `php -S localhost:8080`) atau matikan aplikasi lain yang memakai port tersebut.
 
 - **Error fetch harga Indodax:**  
   - Pastikan koneksi internet stabil.
   - Cek apakah endpoint Indodax tidak down/blokir.
+  - Pastikan ekstensi PHP `allow_url_fopen` diaktifkan di `php.ini` Anda.
 
 - **Data tidak tersimpan:**  
   - Pastikan folder `data/` ada dan memiliki izin tulis.
   - Jalankan server dengan hak akses yang cukup.
 
-- **Tidak bisa install pnpm:**  
-  Instal pnpm global:  
-  ```sh
-  npm install -g pnpm
-  ```
-
 - **Perubahan kode tidak muncul di browser:**  
-  Refresh browser, atau restart server jika mengubah kode backend.
+  Refresh browser, atau restart server jika mengubah kode PHP.
 
 ---
 
@@ -110,4 +88,4 @@ Faris A. Y.
 
 ---
 
-Happy journaling & trading! 🚀
+Happy journaling & trading!
