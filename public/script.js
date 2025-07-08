@@ -1,6 +1,6 @@
 // Mengimpor semua fungsi dari modul api.js dan ui.js.
-import * as api from './js/api.js';
-import * as ui from './js/ui.js';
+import * as api from '/js/api.js';
+import * as ui from '/js/ui.js';
 
 // Menjalankan skrip setelah seluruh konten DOM (struktur HTML) selesai dimuat.
 document.addEventListener('DOMContentLoaded', () => {
