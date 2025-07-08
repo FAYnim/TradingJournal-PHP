@@ -1,6 +1,2 @@
-data
-
-structure.txt
-
-node_modules
-data/
+# Ignore db-bind.php
+db-bind.php
