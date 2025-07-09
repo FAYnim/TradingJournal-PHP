@@ -5,7 +5,7 @@ session_start();
 // Sertakan file konfigurasi database
 require_once 'config.php';
 // Sertakan file database
-require_once 'app/config/db.php';
+require_once 'config/db.php';
 
 // Buat koneksi database di awal
 $db = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS); 
