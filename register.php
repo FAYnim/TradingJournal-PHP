@@ -1,34 +1,57 @@
 <?php
+// Memulai sesi untuk mengelola status pengguna
 session_start();
+
+// Memasukkan file koneksi database
 require_once 'db.php';
 
+// Inisialisasi variabel pesan untuk menampilkan notifikasi kepada pengguna
 $message = '';
 
+// Memeriksa apakah request yang diterima adalah POST (form disubmit)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Mengambil dan membersihkan input dari form
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
+    // Validasi input: memeriksa apakah semua field terisi
     if (empty($username) || empty($password) || empty($confirm_password)) {
         $message = '<div class="alert error">Semua field harus diisi.</div>';
-    } elseif ($password !== $confirm_password) {
+    } 
+    // Validasi input: memeriksa apakah password dan konfirmasi password cocok
+    elseif ($password !== $confirm_password) {
         $message = '<div class="alert error">Konfirmasi password tidak cocok.</div>';
-    } elseif (strlen($password) < 6) {
+    }
+    // Validasi input: memeriksa panjang password minimal 6 karakter
+    elseif (strlen($password) < 6) {
         $message = '<div class="alert error">Password minimal 6 karakter.</div>';
-    } else {
-        $db = new Database('localhost', 'nama_database_anda', 'username_anda', 'password_anda'); // Ganti dengan kredensial Anda
+    } 
+    // Jika semua validasi awal berhasil
+    else {
+        // Membuat instance koneksi database
+        // Ganti 'nama_database_anda', 'username_anda', 'password_anda' dengan kredensial database Anda
+        $db = new Database('localhost', 'nama_database_anda', 'username_anda', 'password_anda'); 
         
-        // Cek apakah username sudah ada
+        // Memeriksa apakah username sudah ada di database
         $existingUser = $db->db_bind("SELECT id FROM users WHERE username = ?", [$username]);
         if ($existingUser) {
             $message = '<div class="alert error">Username sudah terdaftar.</div>';
-        } else {
+        } 
+        // Jika username belum terdaftar, lanjutkan proses pendaftaran
+        else {
+            // Mengenkripsi password sebelum disimpan ke database
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            
+            // Memasukkan data pengguna baru ke tabel users
             $insertId = $db->db_query("INSERT INTO users (username, password) VALUES (?, ?)", [$username, $hashed_password]);
 
+            // Memeriksa apakah pendaftaran berhasil
             if ($insertId) {
                 $message = '<div class="alert success">Pendaftaran berhasil! Silakan <a href="login.php">Login</a>.</div>';
-            } else {
+            } 
+            // Jika pendaftaran gagal
+            else {
                 $message = '<div class="alert error">Pendaftaran gagal: ' . $db->getError() . '</div>';
             }
         }
@@ -42,92 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #2c2c2c; /* Latar belakang gelap */
-            color: #e0e0e0; /* Warna teks terang */
-        }
-        .container {
-            background-color: #3a3a3a; /* Kontainer gelap */
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Bayangan lebih gelap */
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h2 {
-            margin-bottom: 20px;
-            color: #f0f0f0; /* Judul terang */
-        }
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #c0c0c0; /* Label terang */
-            font-weight: bold;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="password"] {
-            width: 100%; /* Full width */
-            padding: 10px;
-            border: 1px solid #555; /* Border input gelap */
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: #4a4a4a; /* Latar belakang input gelap */
-            color: #e0e0e0; /* Teks input terang */
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
-        }
-        .btn-primary {
-            background-color: #007bff; /* Tetap biru atau sesuaikan */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .alert {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .alert.error {
-            background-color: #5c2c2c; /* Latar belakang error gelap */
-            color: #ffcccc; /* Teks error terang */
-            border: 1px solid #8a3d3d;
-        }
-        .alert.success {
-            background-color: #3d5c3d; /* Latar belakang sukses gelap */
-            color: #ccffcc; /* Teks sukses terang */
-            border: 1px solid #5a8a5a;
-        }
-        .link-text {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #c0c0c0; /* Teks link terang */
-        }
-        .link-text a {
-            color: #007bff; /* Warna link tetap biru atau sesuaikan */
-            text-decoration: none;
-        }
-        .link-text a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="auth_styles.css">
 </head>
 <body>
     <div class="container">
