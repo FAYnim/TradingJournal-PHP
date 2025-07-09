@@ -2,8 +2,13 @@
 // Mulai sesi
 session_start();
 
+// Sertakan file konfigurasi database
+require_once 'config.php';
 // Sertakan file database
 require_once 'db.php';
+
+// Buat koneksi database di awal
+$db = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS); 
 
 // Inisialisasi pesan notifikasi
 $message = '';
@@ -24,17 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($password)) {
         $message = '<div class="alert error">Username dan password harus diisi.</div>';
     } else {
-        // Buat koneksi database (ganti kredensial Anda)
-        $db = new Database('localhost', 'nama_database_anda', 'username_anda', 'password_anda'); 
-        
-        // Ambil data user berdasarkan username
-        $user = $db->db_bind("SELECT id, username, password FROM users WHERE username = ?", [$username]);
+        // Ambil data user dari tabel tre_user berdasarkan username
+        $user = $db->db_bind("SELECT id, username, password FROM tre_user WHERE username = ?", [$username]);
 
         // Verifikasi user dan password
         if ($user && password_verify($password, $user['password'])) {
-            // Set sesi dan arahkan ke dashboard
+            // Set variabel sesi
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            
+            // Update is_auth menjadi 1 dan dupd ke waktu saat ini
+            $db->db_query("UPDATE tre_user SET is_auth = 1, dupd = NOW() WHERE id = ?", [$user['id']]);
+
+            // Arahkan pengguna ke halaman dashboard
             header('Location: dashboard.php');
             exit();
         } else {

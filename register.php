@@ -2,8 +2,13 @@
 // Mulai sesi
 session_start();
 
+// Sertakan file konfigurasi database
+require_once 'config.php';
 // Sertakan file database
 require_once 'db.php';
+
+// Buat koneksi database di awal
+$db = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS); 
 
 // Inisialisasi pesan notifikasi
 $message = '';
@@ -12,28 +17,30 @@ $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ambil input form
     $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
     // Validasi input
-    if (empty($username) || empty($password) || empty($confirm_password)) {
+    if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
         $message = '<div class="alert error">Semua field harus diisi.</div>';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = '<div class="alert error">Format email tidak valid.</div>';
     } elseif ($password !== $confirm_password) {
         $message = '<div class="alert error">Konfirmasi password tidak cocok.</div>';
     } elseif (strlen($password) < 6) {
         $message = '<div class="alert error">Password minimal 6 karakter.</div>';
     } else {
-        // Buat koneksi database (ganti kredensial Anda)
-        $db = new Database('localhost', 'nama_database_anda', 'username_anda', 'password_anda'); 
-        
-        // Cek username sudah terdaftar
-        $existingUser = $db->db_bind("SELECT id FROM users WHERE username = ?", [$username]);
+        // Cek username atau email sudah terdaftar
+        $existingUser = $db->db_bind("SELECT id FROM tre_user WHERE username = ? OR email = ?", [$username, $email]);
         if ($existingUser) {
-            $message = '<div class="alert error">Username sudah terdaftar.</div>';
+            $message = '<div class="alert error">Username atau Email sudah terdaftar.</div>';
         } else {
             // Hash password dan simpan user baru
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $insertId = $db->db_query("INSERT INTO users (username, password) VALUES (?, ?)", [$username, $hashed_password]);
+            
+            // is_auth = 0 (belum login), dins dan dupd = waktu saat ini
+            $insertId = $db->db_query("INSERT INTO tre_user (username, email, password, is_auth, dins, dupd) VALUES (?, ?, ?, ?, NOW(), NOW())", [$username, $email, $hashed_password, 0]);
 
             if ($insertId) {
                 $message = '<div class="alert success">Pendaftaran berhasil! Silakan <a href="login.php">Login</a>.</div>';
@@ -61,6 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
