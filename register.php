@@ -5,7 +5,7 @@ session_start();
 // Sertakan file konfigurasi database
 require_once 'config.php';
 // Sertakan file database
-require_once 'db.php';
+require_once 'app/config/db.php';
 
 // Buat koneksi database di awal
 $db = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS); 
@@ -57,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="auth_styles.css">
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="public/css/auth_styles.css">
 </head>
 <body>
     <div class="container">
