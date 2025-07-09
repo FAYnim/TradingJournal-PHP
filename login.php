@@ -1,51 +1,43 @@
 <?php
-// Memulai sesi untuk mengelola status pengguna
+// Mulai sesi
 session_start();
 
-// Memasukkan file koneksi database
+// Sertakan file database
 require_once 'db.php';
 
-// Inisialisasi variabel pesan untuk menampilkan notifikasi kepada pengguna
+// Inisialisasi pesan notifikasi
 $message = '';
 
-// Memeriksa apakah pengguna sudah login
+// Jika user sudah login, arahkan ke dashboard
 if (isset($_SESSION['user_id'])) {
-    // Jika sudah login, arahkan ke halaman dashboard
     header('Location: dashboard.php');
     exit();
 }
 
-// Memeriksa apakah request yang diterima adalah POST (form disubmit)
+// Tangani submit form POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Mengambil dan membersihkan input dari form
+    // Ambil input form
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Validasi input: memeriksa apakah username dan password terisi
+    // Validasi input
     if (empty($username) || empty($password)) {
         $message = '<div class="alert error">Username dan password harus diisi.</div>';
-    } 
-    // Jika validasi awal berhasil
-    else {
-        // Membuat instance koneksi database
-        // Ganti 'nama_database_anda', 'username_anda', 'password_anda' dengan kredensial database Anda
+    } else {
+        // Buat koneksi database (ganti kredensial Anda)
         $db = new Database('localhost', 'nama_database_anda', 'username_anda', 'password_anda'); 
         
-        // Mengambil data pengguna dari database berdasarkan username
+        // Ambil data user berdasarkan username
         $user = $db->db_bind("SELECT id, username, password FROM users WHERE username = ?", [$username]);
 
-        // Memeriksa apakah pengguna ditemukan dan password cocok
+        // Verifikasi user dan password
         if ($user && password_verify($password, $user['password'])) {
-            // Jika login berhasil, set variabel sesi
+            // Set sesi dan arahkan ke dashboard
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-            
-            // Arahkan pengguna ke halaman dashboard
             header('Location: dashboard.php');
             exit();
-        } 
-        // Jika username atau password salah
-        else {
+        } else {
             $message = '<div class="alert error">Username atau password salah.</div>';
         }
     }

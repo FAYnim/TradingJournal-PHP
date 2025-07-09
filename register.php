@@ -1,57 +1,43 @@
 <?php
-// Memulai sesi untuk mengelola status pengguna
+// Mulai sesi
 session_start();
 
-// Memasukkan file koneksi database
+// Sertakan file database
 require_once 'db.php';
 
-// Inisialisasi variabel pesan untuk menampilkan notifikasi kepada pengguna
+// Inisialisasi pesan notifikasi
 $message = '';
 
-// Memeriksa apakah request yang diterima adalah POST (form disubmit)
+// Tangani submit form POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Mengambil dan membersihkan input dari form
+    // Ambil input form
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
-    // Validasi input: memeriksa apakah semua field terisi
+    // Validasi input
     if (empty($username) || empty($password) || empty($confirm_password)) {
         $message = '<div class="alert error">Semua field harus diisi.</div>';
-    } 
-    // Validasi input: memeriksa apakah password dan konfirmasi password cocok
-    elseif ($password !== $confirm_password) {
+    } elseif ($password !== $confirm_password) {
         $message = '<div class="alert error">Konfirmasi password tidak cocok.</div>';
-    }
-    // Validasi input: memeriksa panjang password minimal 6 karakter
-    elseif (strlen($password) < 6) {
+    } elseif (strlen($password) < 6) {
         $message = '<div class="alert error">Password minimal 6 karakter.</div>';
-    } 
-    // Jika semua validasi awal berhasil
-    else {
-        // Membuat instance koneksi database
-        // Ganti 'nama_database_anda', 'username_anda', 'password_anda' dengan kredensial database Anda
+    } else {
+        // Buat koneksi database (ganti kredensial Anda)
         $db = new Database('localhost', 'nama_database_anda', 'username_anda', 'password_anda'); 
         
-        // Memeriksa apakah username sudah ada di database
+        // Cek username sudah terdaftar
         $existingUser = $db->db_bind("SELECT id FROM users WHERE username = ?", [$username]);
         if ($existingUser) {
             $message = '<div class="alert error">Username sudah terdaftar.</div>';
-        } 
-        // Jika username belum terdaftar, lanjutkan proses pendaftaran
-        else {
-            // Mengenkripsi password sebelum disimpan ke database
+        } else {
+            // Hash password dan simpan user baru
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            
-            // Memasukkan data pengguna baru ke tabel users
             $insertId = $db->db_query("INSERT INTO users (username, password) VALUES (?, ?)", [$username, $hashed_password]);
 
-            // Memeriksa apakah pendaftaran berhasil
             if ($insertId) {
                 $message = '<div class="alert success">Pendaftaran berhasil! Silakan <a href="login.php">Login</a>.</div>';
-            } 
-            // Jika pendaftaran gagal
-            else {
+            } else {
                 $message = '<div class="alert error">Pendaftaran gagal: ' . $db->getError() . '</div>';
             }
         }
