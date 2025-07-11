@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-// Cek jika pengguna belum login, arahkan ke halaman login
+// Cek login pengguna
 if (!isset($_SESSION['user_id'])) {
-    // Jika ini adalah permintaan AJAX, kirim error 401
+    // Permintaan AJAX
     if (isset($_GET['action'])) {
         header('Content-Type: application/json');
-        http_response_code(401); // Unauthorized
+        http_response_code(401);
         echo json_encode(['message' => 'Sesi tidak valid. Silakan login kembali.']);
     } else {
-        // Jika ini adalah akses halaman langsung, redirect ke login
+        // Akses halaman langsung
         header('Location: login.php');
     }
     exit();
@@ -19,7 +19,7 @@ require_once __DIR__ . '/utils/statsCalculator.php';
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/utils/db_operations.php';
 
-// --- Inisialisasi Koneksi Database ---
+// Inisialisasi database
 try {
     $db = new Database(); 
 } catch (Exception $e) {
@@ -29,75 +29,61 @@ try {
     exit;
 }
 
-// Simple Router for AJAX requests
+// Router permintaan AJAX
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
 
     $action = $_GET['action'];
     $user_id = $_SESSION['user_id'];
 
-    switch ($action) {
-        case 'getData':
-            echo json_encode(getAllOrders($db, $user_id));
-            break;
-
-        case 'getStatistics':
-            $allOrders = getAllOrders($db, $user_id);
-            echo json_encode(calculatePortfolioStats($allOrders));
-            break;
-
-        case 'addOrder':
-            $newData = json_decode(file_get_contents('php://input'), true);
-            $orderId = addOrder($db, $newData, $user_id);
-            if ($orderId) {
-                $newOrderData = $db->db_bind("SELECT * FROM orders WHERE id = ? AND user_id = ?", [$orderId, $user_id]);
-                echo json_encode($newOrderData);
-            } else {
-                http_response_code(500);
-                echo json_encode(['message' => 'Gagal menambahkan order']);
-            }
-            break;
-
-        case 'updateStatus':
-            $updateData = json_decode(file_get_contents('php://input'), true);
-            $success = updateOrderStatus($db, $updateData['id'], $updateData['status'], $updateData['final_profit'], $user_id);
-            if ($success) {
-                echo json_encode(['message' => 'Status berhasil diperbarui']);
-            } else {
-                http_response_code(500);
-                echo json_encode(['message' => 'Gagal memperbarui status']);
-            }
-            break;
-
-        case 'getSetupPlans':
-            echo json_encode(getSetupPlans($db, $user_id));
-            break;
-
-        case 'saveSetupPlans':
-            $plans = json_decode(file_get_contents('php://input'), true);
-            if (saveSetupPlans($db, $plans, $user_id)) {
-                echo json_encode(['message' => 'Setup plan berhasil disimpan']);
-            } else {
-                http_response_code(500);
-                echo json_encode(['message' => 'Gagal menyimpan setup plan']);
-            }
-            break;
-
-        case 'getTickers':
-            $url = 'https://indodax.com/api/tickers';
-            $response = @file_get_contents($url);
-            if ($response === FALSE) {
-                http_response_code(500);
-                echo json_encode(['message' => 'Gagal mengambil data dari Indodax']);
-            } else {
-                echo $response;
-            }
-            break;
+    if ($action === 'getData') {
+        echo json_encode(getAllOrders($db, $user_id));
+    } else if ($action === 'getStatistics') {
+        $allOrders = getAllOrders($db, $user_id);
+        echo json_encode(calculatePortfolioStats($allOrders));
+    } else if ($action === 'addOrder') {
+        $newData = json_decode(file_get_contents('php://input'), true);
+        $orderId = addOrder($db, $newData, $user_id);
+        if ($orderId) {
+            $newOrderData = $db->db_bind("SELECT * FROM orders WHERE id = ? AND user_id = ?", [$orderId, $user_id]);
+            echo json_encode($newOrderData);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Gagal menambahkan order']);
+        }
+    } else if ($action === 'updateStatus') {
+        $updateData = json_decode(file_get_contents('php://input'), true);
+        $success = updateOrderStatus($db, $updateData['id'], $updateData['status'], $updateData['final_profit'], $user_id);
+        if ($success) {
+            echo json_encode(['message' => 'Status berhasil diperbarui']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Gagal memperbarui status']);
+        }
+    } else if ($action === 'getSetupPlans') {
+        echo json_encode(getSetupPlans($db, $user_id));
+    } else if ($action === 'saveSetupPlans') {
+        $plans = json_decode(file_get_contents('php://input'), true);
+        if (saveSetupPlans($db, $plans, $user_id)) {
+            echo json_encode(['message' => 'Setup plan berhasil disimpan']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['message' => 'Gagal menyimpan setup plan']);
+        }
+    } else if ($action === 'getTickers') {
+        $url = 'https://indodax.com/api/tickers';
+        $response = @file_get_contents($url);
+        if ($response === FALSE) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Gagal mengambil data dari Indodax']);
+        } else {
+            echo $response;
+        }
     }
-    exit; // Stop execution after handling AJAX
+    exit; // Hentikan eksekusi
 }
 
-// Jika bukan request AJAX, tampilkan halaman HTML
+// Tampilkan halaman HTML
 ?><!DOCTYPE html>
 <html lang="id">
 <head>
