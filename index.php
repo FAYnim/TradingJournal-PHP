@@ -120,8 +120,8 @@
                 <div class="features-grid">
                     <div class="feature-item fade-in-element">
                         <i class="fa-solid fa-file-import"></i>
-                        <h3>Otomatisasi Jurnal</h3>
-                        <p>Import langsung dari exchange dan bot.</p>
+                        <h3>Catat Jurnal</h3>
+                        <p>Catat setiap aksi yang anda lakukan.</p>
                     </div>
                     <div class="feature-item fade-in-element">
                         <i class="fa-solid fa-chart-pie"></i>
@@ -154,7 +154,7 @@
             </div>
         </section>
         
-        <section class="testimonials">
+        <!--section class="testimonials">
             <div class="container">
                 <h2 class="fade-in-element">Dipercaya oleh Ratusan Trader</h2>
                 <div class="testimonials-grid">
@@ -190,7 +190,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section-->
 
         <section class="cta-section-wrapper">
             <div class="container">
@@ -206,13 +206,13 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-col">
+                <!--div class="footer-col">
                     <h4>Menu</h4>
                     <a href="#">Fitur</a>
                     <a href="#">Tentang</a>
                     <a href="#">Blog</a>
                     <a href="#">Kontak</a>
-                </div>
+                </div-->
                 <div class="footer-col">
                     <h4>Sosial</h4>
                     <a href="https://instagram.com/faris.a.y" target="_blank" rel="noopener noreferrer">
@@ -221,17 +221,12 @@
                     <a href="https://threads.net/@faris.a.y" target="_blank" rel="noopener noreferrer">
                         <i class="fa-brands fa-threads"></i> Threads
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer">
+                    <!--a href="#" target="_blank" rel="noopener noreferrer">
                         <i class="fa-brands fa-youtube"></i> YouTube
                     </a>
                     <a href="#" target="_blank" rel="noopener noreferrer">
                         <i class="fa-brands fa-github"></i> GitHub
-                    </a>
-                </div>
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Privacy Policy</a>
+                    </a-->
                 </div>
             </div>
             <div class="footer-copyright">
