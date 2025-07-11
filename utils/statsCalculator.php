@@ -15,8 +15,8 @@ function calculatePortfolioStats($orders) {
     $totalLossProfit = 0;
 
     foreach ($orders as $order) {
-        if (isset($order->status) && $order->status === 'Selesai') {
-            $profit = isset($order->final_profit) ? (float)$order->final_profit : 0;
+        if (isset($order['status']) && $order['status'] === 'Selesai') {
+            $profit = isset($order['final_profit_percent']) ? (float)$order['final_profit_percent'] : 0;
             if (is_nan($profit)) continue;
 
             $summary['totalProfit'] += $profit;
@@ -27,7 +27,7 @@ function calculatePortfolioStats($orders) {
                 $summary['losses']++;
                 $totalLossProfit += $profit;
             }
-        } elseif (isset($order->status) && $order->status === 'Batal') {
+        } elseif (isset($order['status']) && $order['status'] === 'Batal') {
             $summary['batal']++;
         }
     }
