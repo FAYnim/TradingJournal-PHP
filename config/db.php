@@ -9,10 +9,9 @@
 class Database
 {
     private $host = 'localhost';
-    private $dbname = 'nama_database_anda';
-    // Ganti dengan nama database Anda
-    private $user = 'username_anda';
-    private $pass = 'password_anda';
+    private $dbname = 'fayd7716_project';
+    private $user = 'fayd7716_project';
+    private $pass = '#8C9yGOGHp-}3&.&';
 
     private $mysqli;
     private $error;

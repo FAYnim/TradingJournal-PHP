@@ -72,25 +72,25 @@ $(document).ready(function() {
                 return;
             }
             dataArray.forEach(entry => {
-                const formattedDate = new Date(entry.timestamp).toLocaleString('id-ID');
-                const shortId = entry.id ? entry.id.split('-')[0] : 'Lama';
+                const formattedDate = new Date(entry.created_at).toLocaleString('id-ID');
+                const shortId = entry.id;
                 const statusClass = `status-${entry.status.toLowerCase()}`;
                 const statusHTML = `<span class="status-badge ${statusClass}">${entry.status}</span>`;
-                const priceHTML = `<div class="price-stack"><div class="price-item price-entry">E: ${parseFloat(entry.entry).toLocaleString('id-ID')}</div><div class="price-item price-tp">TP: ${parseFloat(entry.takeProfit).toLocaleString('id-ID')}</div><div class="price-item price-sl">SL: ${parseFloat(entry.stopLoss).toLocaleString('id-ID')}</div></div>`;
+                const priceHTML = `<div class="price-stack"><div class="price-item price-entry">E: ${parseFloat(entry.entry_price).toLocaleString('id-ID')}</div><div class="price-item price-tp">TP: ${parseFloat(entry.take_profit).toLocaleString('id-ID')}</div><div class="price-item price-sl">SL: ${parseFloat(entry.stop_loss).toLocaleString('id-ID')}</div></div>`;
                 
                 let profitCellHTML = 'N/A';
                 let liveProfitPercentage = null;
 
-                if (entry.final_profit !== undefined) {
-                    const savedProfit = parseFloat(entry.final_profit);
+                if (entry.final_profit_percent !== null) {
+                    const savedProfit = parseFloat(entry.final_profit_percent);
                     profitCellHTML = `<span class="${savedProfit >= 0 ? 'profit' : 'loss'}">${savedProfit.toFixed(2)}%</span>`;
                 } else if (entry.status === 'Open' && liveTickers) {
                     const apiPair = entry.pair.toLowerCase().replace('idr', '_idr');
                     const ticker = liveTickers[apiPair];
                     if (ticker) {
-                        const percentage = (entry.duration === 'Long')
-                            ? ((ticker.last - entry.entry) / entry.entry) * 100
-                            : ((entry.entry - ticker.last) / entry.entry) * 100;
+                        const percentage = (entry.order_type === 'Long')
+                            ? ((ticker.last - entry.entry_price) / entry.entry_price) * 100
+                            : ((entry.entry_price - ticker.last) / entry.entry_price) * 100;
                         liveProfitPercentage = percentage;
                         profitCellHTML = `<span class="${percentage >= 0 ? 'profit' : 'loss'}">${percentage.toFixed(2)}%</span>`;
                     }
@@ -100,7 +100,7 @@ $(document).ready(function() {
                     ? `<div class="action-buttons"><button class="action-btn btn-selesai" data-id="${entry.id}" data-status="Selesai" data-profit="${liveProfitPercentage}"><i class="fas fa-check"></i></button><button class="action-btn btn-batal" data-id="${entry.id}" data-status="Batal"><i class="fas fa-times"></i></button></div>`
                     : '';
 
-                $tableBody.append(`<tr><td>${shortId}</td><td>${formattedDate}</td><td>${entry.pair}</td><td>${entry.duration}</td><td>${statusHTML}</td><td>${priceHTML}</td><td>${entry.timeframe}</td><td>${profitCellHTML}</td><td>${actionHTML}</td></tr>`);
+                $tableBody.append(`<tr><td>${shortId}</td><td>${formattedDate}</td><td>${entry.pair}</td><td>${entry.order_type}</td><td>${statusHTML}</td><td>${priceHTML}</td><td>${entry.timeframe}</td><td>${profitCellHTML}</td><td>${actionHTML}</td></tr>`);
             });
         },
 
@@ -135,14 +135,14 @@ $(document).ready(function() {
 
         createPlanCard: function(plan) {
             const conditionsHTML = plan.conditions.map(cond => this.createConditionItem(cond)).join('');
-            return `<div class="plan-card" data-plan-id="${plan.id}">
+            return `<div class="plan-card">
                         <div class="plan-header"><input type="text" class="plan-title" value="${plan.title}"><button class="delete-plan-btn"><i class="fas fa-trash-alt"></i></button></div>
                         <div class="plan-body"><ul class="condition-list">${conditionsHTML}</ul><button class="add-condition-btn"><i class="fas fa-plus"></i> Tambah Kondisi</button></div>
                     </div>`;
         },
 
         createConditionItem: function(condition) {
-            return `<li class="condition-item" data-condition-id="${condition.id}">
+            return `<li class="condition-item">
                         <input type="checkbox" ${condition.checked ? 'checked' : ''}>
                         <input type="text" class="condition-text" value="${condition.text}">
                         <button class="delete-condition-btn"><i class="fas fa-times"></i></button>
@@ -227,10 +227,10 @@ $(document).ready(function() {
         const plans = [];
         $('.plan-card').each(function() {
             const $card = $(this);
-            const plan = { id: $card.data('planId'), title: $card.find('.plan-title').val(), conditions: [] };
+            const plan = { title: $card.find('.plan-title').val(), conditions: [] };
             $card.find('.condition-item').each(function() {
                 const $item = $(this);
-                plan.conditions.push({ id: $item.data('conditionId'), text: $item.find('.condition-text').val(), checked: $item.find('input[type="checkbox"]').is(':checked') });
+                plan.conditions.push({ text: $item.find('.condition-text').val(), checked: $item.find('input[type="checkbox"]').is(':checked') });
             });
             plans.push(plan);
         });

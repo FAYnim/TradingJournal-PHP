@@ -1,68 +1,73 @@
 <?php
 require_once __DIR__ . '/utils/statsCalculator.php';
+require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/utils/db_operations.php';
+
+// --- Inisialisasi Koneksi Database ---
+// Ganti dengan kredensial Anda jika diperlukan
+try {
+    $db = new Database(); 
+} catch (Exception $e) {
+    // Jika koneksi gagal, kirim response error dan hentikan eksekusi
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode(['message' => 'Koneksi database gagal: ' . $e->getMessage()]);
+    exit;
+}
+
 
 // Simple Router for AJAX requests
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
-    $DATA_FILE = __DIR__ . '/data/data-order.json';
-    $SETUP_PLANS_FILE = __DIR__ . '/data/setup-plans.json';
-
-    // Initialize data files if they don't exist
-    if (!file_exists($DATA_FILE)) file_put_contents($DATA_FILE, '[]');
-    if (!file_exists($SETUP_PLANS_FILE)) file_put_contents($SETUP_PLANS_FILE, '[]');
 
     $action = $_GET['action'];
 
     switch ($action) {
         case 'getData':
-            echo file_get_contents($DATA_FILE);
+            echo json_encode(getAllOrders($db));
             break;
 
         case 'getStatistics':
-            $allOrders = json_decode(file_get_contents($DATA_FILE));
+            $allOrders = getAllOrders($db);
             echo json_encode(calculatePortfolioStats($allOrders));
             break;
 
         case 'addOrder':
-            $newData = json_decode(file_get_contents('php://input'));
-            $newData->id = uniqid();
-            $newData->timestamp = date('c');
-            $newData->status = 'Open';
-            $allData = json_decode(file_get_contents($DATA_FILE));
-            $allData[] = $newData;
-            file_put_contents($DATA_FILE, json_encode($allData, JSON_PRETTY_PRINT));
-            echo json_encode($newData);
+            $newData = json_decode(file_get_contents('php://input'), true);
+            $orderId = addOrder($db, $newData);
+            if ($orderId) {
+                // Ambil data order yang baru ditambahkan untuk dikirim kembali
+                $newOrderData = $db->db_bind("SELECT * FROM orders WHERE id = ?", [$orderId]);
+                echo json_encode($newOrderData);
+            } else {
+                http_response_code(500);
+                echo json_encode(['message' => 'Gagal menambahkan order']);
+            }
             break;
 
         case 'updateStatus':
-            $updateData = json_decode(file_get_contents('php://input'));
-            $allData = json_decode(file_get_contents($DATA_FILE));
-            $orderFound = false;
-            foreach ($allData as $order) {
-                if ($order->id === $updateData->id) {
-                    $orderFound = true;
-                    $order->status = $updateData->status;
-                    if (isset($updateData->final_profit)) $order->final_profit = $updateData->final_profit;
-                    break;
-                }
-            }
-            if ($orderFound) {
-                file_put_contents($DATA_FILE, json_encode($allData, JSON_PRETTY_PRINT));
+            $updateData = json_decode(file_get_contents('php://input'), true);
+            $success = updateOrderStatus($db, $updateData['id'], $updateData['status'], $updateData['final_profit']);
+            if ($success) {
                 echo json_encode(['message' => 'Status berhasil diperbarui']);
             } else {
-                http_response_code(404);
-                echo json_encode(['message' => 'Order tidak ditemukan']);
+                http_response_code(500);
+                echo json_encode(['message' => 'Gagal memperbarui status']);
             }
             break;
 
         case 'getSetupPlans':
-            echo file_get_contents($SETUP_PLANS_FILE);
+            echo json_encode(getSetupPlans($db));
             break;
 
         case 'saveSetupPlans':
-            $plans = json_decode(file_get_contents('php://input'));
-            file_put_contents($SETUP_PLANS_FILE, json_encode($plans, JSON_PRETTY_PRINT));
-            echo json_encode(['message' => 'Setup plan berhasil disimpan']);
+            $plans = json_decode(file_get_contents('php://input'), true);
+            if (saveSetupPlans($db, $plans)) {
+                echo json_encode(['message' => 'Setup plan berhasil disimpan']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['message' => 'Gagal menyimpan setup plan']);
+            }
             break;
 
         case 'getTickers':
