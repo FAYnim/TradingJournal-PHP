@@ -1,6 +1,1 @@
-# Ignore db-bind.php
-db-bind.php
-
-# Ignore sensitive files and directories
-config.php
-data/
+config/db.php
