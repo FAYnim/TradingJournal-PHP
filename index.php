@@ -105,8 +105,7 @@
                 <h1 class="fade-in-element">Catat. Evaluasi. Menang.</h1>
                 <p class="fade-in-element">Platform jurnal trading yang bantu kamu analisis performa dan konsisten profit.</p>
                 <div class="hero-cta fade-in-element">
-                    <a href="#" class="btn btn-primary">Mulai Gratis</a>
-                    <a href="#" class="btn btn-secondary">Lihat Demo</a>
+                    <a href="dashboard.php" class="btn btn-primary">Mulai Gratis</a>
                 </div>
                 <div class="hero-mockup fade-in-element">
                     <img src="https://placehold.co/800x450/1A1D22/E0E0E0?text=Aplikasi+Mockup" alt="Mockup Aplikasi Trading Journal">
@@ -197,7 +196,7 @@
                 <div class="cta-section fade-in-element">
                     <h2>Mulai bangun disiplin trading hari ini.</h2>
                     <p>Gunakan gratis. Tidak butuh kartu kredit.</p>
-                    <a href="#" class="btn btn-primary">Buat Akun Sekarang</a>
+                    <a href="dashboard.php" class="btn btn-primary">Buat Akun Sekarang</a>
                 </div>
             </div>
         </section>
