@@ -1,43 +1,56 @@
 <?php
+session_start();
+
+// Cek jika pengguna belum login, arahkan ke halaman login
+if (!isset($_SESSION['user_id'])) {
+    // Jika ini adalah permintaan AJAX, kirim error 401
+    if (isset($_GET['action'])) {
+        header('Content-Type: application/json');
+        http_response_code(401); // Unauthorized
+        echo json_encode(['message' => 'Sesi tidak valid. Silakan login kembali.']);
+    } else {
+        // Jika ini adalah akses halaman langsung, redirect ke login
+        header('Location: login.php');
+    }
+    exit();
+}
+
 require_once __DIR__ . '/utils/statsCalculator.php';
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/utils/db_operations.php';
 
 // --- Inisialisasi Koneksi Database ---
-// Ganti dengan kredensial Anda jika diperlukan
 try {
     $db = new Database(); 
 } catch (Exception $e) {
-    // Jika koneksi gagal, kirim response error dan hentikan eksekusi
     header('Content-Type: application/json');
     http_response_code(500);
     echo json_encode(['message' => 'Koneksi database gagal: ' . $e->getMessage()]);
     exit;
 }
 
-
 // Simple Router for AJAX requests
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
 
     $action = $_GET['action'];
+    $user_id = $_SESSION['user_id'];
 
     switch ($action) {
         case 'getData':
-            echo json_encode(getAllOrders($db));
+            echo json_encode(getAllOrders($db, $user_id));
             break;
 
         case 'getStatistics':
-            $allOrders = getAllOrders($db);
+            $allOrders = getAllOrders($db, $user_id);
             echo json_encode(calculatePortfolioStats($allOrders));
             break;
 
         case 'addOrder':
             $newData = json_decode(file_get_contents('php://input'), true);
-            $orderId = addOrder($db, $newData);
+            $orderId = addOrder($db, $newData, $user_id);
             if ($orderId) {
-                // Ambil data order yang baru ditambahkan untuk dikirim kembali
-                $newOrderData = $db->db_bind("SELECT * FROM orders WHERE id = ?", [$orderId]);
+                $newOrderData = $db->db_bind("SELECT * FROM orders WHERE id = ? AND user_id = ?", [$orderId, $user_id]);
                 echo json_encode($newOrderData);
             } else {
                 http_response_code(500);
@@ -47,7 +60,7 @@ if (isset($_GET['action'])) {
 
         case 'updateStatus':
             $updateData = json_decode(file_get_contents('php://input'), true);
-            $success = updateOrderStatus($db, $updateData['id'], $updateData['status'], $updateData['final_profit']);
+            $success = updateOrderStatus($db, $updateData['id'], $updateData['status'], $updateData['final_profit'], $user_id);
             if ($success) {
                 echo json_encode(['message' => 'Status berhasil diperbarui']);
             } else {
@@ -57,12 +70,12 @@ if (isset($_GET['action'])) {
             break;
 
         case 'getSetupPlans':
-            echo json_encode(getSetupPlans($db));
+            echo json_encode(getSetupPlans($db, $user_id));
             break;
 
         case 'saveSetupPlans':
             $plans = json_decode(file_get_contents('php://input'), true);
-            if (saveSetupPlans($db, $plans)) {
+            if (saveSetupPlans($db, $plans, $user_id)) {
                 echo json_encode(['message' => 'Setup plan berhasil disimpan']);
             } else {
                 http_response_code(500);
@@ -84,6 +97,7 @@ if (isset($_GET['action'])) {
     exit; // Stop execution after handling AJAX
 }
 
+// Jika bukan request AJAX, tampilkan halaman HTML
 ?><!DOCTYPE html>
 <html lang="id">
 <head>
@@ -112,6 +126,7 @@ if (isset($_GET['action'])) {
             <a href="#" id="nav-setup" data-page="setup"><i class="fas fa-cogs"></i> Setup</a>
         </nav>
         <div class="sidebar-footer">
+            <a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
             <p>Dibuat oleh Faris</p>
             <p><a href="https://instagram.com/faris.a.y" target="_blank">Instagram</a> | <a href="https://threads.net/@faris.a.y" target="_blank">Threads</a></p>
         </div>

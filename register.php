@@ -2,13 +2,11 @@
 // Mulai sesi
 session_start();
 
-// Sertakan file konfigurasi database
-require_once 'config.php';
 // Sertakan file database
 require_once 'config/db.php';
 
-// Buat koneksi database di awal
-$db = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS); 
+// Buat koneksi database
+$db = new Database();
 
 // Inisialisasi pesan notifikasi
 $message = '';
@@ -32,15 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = '<div class="alert error">Password minimal 6 karakter.</div>';
     } else {
         // Cek username atau email sudah terdaftar
-        $existingUser = $db->db_bind("SELECT id FROM tre_user WHERE username = ? OR email = ?", [$username, $email]);
+        $existingUser = $db->db_bind("SELECT id FROM users WHERE username = ? OR email = ?", [$username, $email]);
         if ($existingUser) {
             $message = '<div class="alert error">Username atau Email sudah terdaftar.</div>';
         } else {
             // Hash password dan simpan user baru
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             
-            // is_auth = 0 (belum login), dins dan dupd = waktu saat ini
-            $insertId = $db->db_query("INSERT INTO tre_user (username, email, password, is_auth, dins, dupd) VALUES (?, ?, ?, ?, NOW(), NOW())", [$username, $email, $hashed_password, 0]);
+            $insertId = $db->db_query("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)", [$username, $email, $hashed_password]);
 
             if ($insertId) {
                 $message = '<div class="alert success">Pendaftaran berhasil! Silakan <a href="login.php">Login</a>.</div>';
