@@ -6,6 +6,7 @@
             <a href="#" id="nav-add" data-page="add-order"><i class="fas fa-plus-circle"></i> Tambah Order</a>
             <a href="#" id="nav-statistic" data-page="statistic"><i class="fas fa-chart-pie"></i> Statistik</a>
             <a href="#" id="nav-setup" data-page="setup"><i class="fas fa-cogs"></i> Setup</a>
+            <a href="#" id="nav-assets" data-page="assets"><i class="fas fa-wallet"></i> Aset</a>
         </nav>
         <div class="sidebar-footer">
             <a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>

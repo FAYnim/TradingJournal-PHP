@@ -105,6 +105,7 @@ if (isset($_GET['action'])) {
         <?php include 'includes/archive_orders.php'; ?>
         <?php include 'includes/statistics.php'; ?>
         <?php include 'includes/setup.php'; ?>
+        <?php include 'includes/assets.php'; ?>
     </main>
 
     <?php include 'includes/scripts.php'; ?>
