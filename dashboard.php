@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
         echo json_encode(['message' => 'Sesi tidak valid. Silakan login kembali.']);
     } else {
         // Akses halaman langsung
-        header('Location: login.php');
+        header('Location: login');
     }
     exit();
 }
