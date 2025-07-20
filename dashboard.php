@@ -98,9 +98,9 @@ if (isset($_GET['action'])) {
     <?php include 'includes/sidebar.php'; ?>
 
     <main id="main-content" class="main-content">
-        <?php include 'includes/add_order.php'; ?>
-        <?php include 'includes/view_orders.php'; ?>
-        <?php include 'includes/archive_orders.php'; ?>
+        <?php include 'includes/add-order.php'; ?>
+        <?php include 'includes/view-orders.php'; ?>
+        <?php include 'includes/archive-orders.php'; ?>
         <?php include 'includes/statistics.php'; ?>
         <?php include 'includes/setup.php'; ?>
     </main>
