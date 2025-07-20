@@ -103,6 +103,7 @@ if (isset($_GET['action'])) {
         <?php include 'includes/archive-orders.php'; ?>
         <?php include 'includes/statistics.php'; ?>
         <?php include 'includes/setup.php'; ?>
+        <?php include 'includes/watchlist.php'; ?>
     </main>
 
     <?php include 'includes/scripts.php'; ?>
