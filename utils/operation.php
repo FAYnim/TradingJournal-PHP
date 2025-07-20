@@ -1,24 +1,57 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 
-/**
- * Mendapatkan semua order dari database untuk pengguna tertentu.
- * @param Database $db Instance dari kelas Database.
- * @param int $user_id ID pengguna.
- * @return array Daftar semua order.
- */
+function calculatePortfolioStats($orders) {
+    $summary = [
+        'totalTrades' => 0,
+        'wins' => 0,
+        'losses' => 0,
+        'batal' => 0,
+        'totalProfit' => 0,
+        'winRate' => 0,
+        'avgWin' => 0,
+        'avgLoss' => 0
+    ];
+    $totalWinProfit = 0;
+    $totalLossProfit = 0;
+
+    foreach ($orders as $order) {
+        if (isset($order['status']) && $order['status'] === 'Selesai') {
+            $profit = isset($order['final_profit_percent']) ? (float)$order['final_profit_percent'] : 0;
+            if (is_nan($profit)) continue;
+
+            $summary['totalProfit'] += $profit;
+            if ($profit >= 0) {
+                $summary['wins']++;
+                $totalWinProfit += $profit;
+            } else {
+                $summary['losses']++;
+                $totalLossProfit += $profit;
+            }
+        } elseif (isset($order['status']) && $order['status'] === 'Batal') {
+            $summary['batal']++;
+        }
+    }
+
+    $summary['totalTrades'] = $summary['wins'] + $summary['losses'];
+    if ($summary['totalTrades'] > 0) {
+        $summary['winRate'] = ($summary['wins'] / $summary['totalTrades']) * 100;
+    }
+    if ($summary['wins'] > 0) {
+        $summary['avgWin'] = $totalWinProfit / $summary['wins'];
+    }
+    if ($summary['losses'] > 0) {
+        $summary['avgLoss'] = $totalLossProfit / $summary['losses'];
+    }
+
+    return ['summary' => $summary];
+}
+
 function getAllOrders($db, $user_id)
 {
     return $db->db_fetch("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [$user_id]);
 }
 
-/**
- * Menambahkan order baru ke database untuk pengguna tertentu.
- * @param Database $db Instance dari kelas Database.
- * @param array $data Data order yang akan ditambahkan.
- * @param int $user_id ID pengguna.
- * @return mixed ID dari order yang baru ditambahkan, atau false jika gagal.
- */
 function addOrder($db, $data, $user_id)
 {
     $sql = "INSERT INTO orders (user_id, pair, entry_price, take_profit, stop_loss, timeframe, order_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -34,27 +67,12 @@ function addOrder($db, $data, $user_id)
     return $db->db_query($sql, $params);
 }
 
-/**
- * Memperbarui status order di database.
- * @param Database $db Instance dari kelas Database.
- * @param int $id ID order yang akan diperbarui.
- * @param string $status Status baru order.
- * @param float|null $final_profit Keuntungan/kerugian final.
- * @param int $user_id ID pengguna.
- * @return bool True jika berhasil, false jika gagal.
- */
 function updateOrderStatus($db, $id, $status, $final_profit = null, $user_id)
 {
     $sql = "UPDATE orders SET status = ?, final_profit_percent = ? WHERE id = ? AND user_id = ?";
     return $db->db_query($sql, [$status, $final_profit, $id, $user_id]);
 }
 
-/**
- * Mendapatkan semua setup plan dari database untuk pengguna tertentu.
- * @param Database $db Instance dari kelas Database.
- * @param int $user_id ID pengguna.
- * @return array Daftar semua setup plan beserta kondisinya.
- */
 function getSetupPlans($db, $user_id)
 {
     $plans = $db->db_fetch("SELECT * FROM setup_plans WHERE user_id = ? ORDER BY created_at ASC", [$user_id]);
@@ -64,13 +82,6 @@ function getSetupPlans($db, $user_id)
     return $plans;
 }
 
-/**
- * Menyimpan setup plan ke database untuk pengguna tertentu.
- * @param Database $db Instance dari kelas Database.
- * @param array $plans Data setup plan yang akan disimpan.
- * @param int $user_id ID pengguna.
- * @return bool True jika berhasil, false jika gagal.
- */
 function saveSetupPlans($db, $plans, $user_id)
 {
     // Hapus semua plan dan kondisi yang ada untuk user ini
