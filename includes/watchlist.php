@@ -1,4 +1,4 @@
-<div id="page-watchlist" class="page-content">
+<div id="page-watchlist" class="page-content hidden">
              <section class="card">
                 <div class="table-header">
                     <h2>Watchlist</h2>
