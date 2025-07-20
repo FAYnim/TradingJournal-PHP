@@ -90,6 +90,7 @@ h2 {
 .main-content {
     margin-top: 60px; /* Adjust for new header height */
     padding: 20px;
+    width: 100%; /* Pastikan mengambil lebar penuh */
     max-width: 1200px; /* Wider content area */
     margin-left: auto;
     margin-right: auto;
@@ -238,14 +239,15 @@ form {
 
 /* Styling umum untuk tabel */
 .table-container {
-    overflow-x: auto;
+    overflow: auto; /* Menggabungkan overflow-x dan overflow-y */
+    max-height: 400px; /* Contoh tinggi maksimal, sesuaikan jika perlu */
     background-color: var(--surface-color);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     padding: 15px;
 }
 table {
-    width: 100%;
+    min-width: max-content;
     border-collapse: separate;
     border-spacing: 0;
     margin-top: 0;
