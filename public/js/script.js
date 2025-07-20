@@ -1,3 +1,19 @@
+// =================================================================================
+// script.js
+//
+// File JavaScript utama untuk halaman dashboard Jurnal Trading.
+// File ini bertanggung jawab untuk:
+// 1.  Mengelola navigasi dan tampilan antar halaman (View, Add, Statistic, Setup).
+// 2.  Mengambil (fetch) dan mengirim data ke backend (dashboard.php) via AJAX.
+// 3.  Memuat dan menampilkan data order trading (aktif dan arsip) secara dinamis.
+// 4.  Menangani interaksi pengguna seperti menambah order, mengubah status, dan me-refresh data.
+// 5.  Memuat dan menampilkan data statistik dalam bentuk kartu dan diagram lingkaran (pie chart).
+// 6.  Mengelola fungsionalitas untuk membuat, menyimpan, dan mengubah checklist rencana trading.
+// 7.  Mengontrol elemen UI seperti sidebar, tombol refresh, dan formulir.
+//
+// Menggunakan: jQuery untuk manipulasi DOM dan AJAX, Chart.js untuk diagram.
+// =================================================================================
+
 $(document).ready(function() {
     // --- Globals ---
     let statisticChart = null;
