@@ -1,0 +1,77 @@
+/*
+CSS untuk halaman utama (landing page) Trading Journal.
+Isinya styling dasar, layout, dan komponen seperti hero, fitur, dan footer.
+*/
+:root {
+    --bg-color: #121417;
+    --surface-color: #1A1D22;
+    --header-color: #212429;
+    --primary-color: #00B06B;
+    --text-color: #E0E0E0;
+    --text-light: #B0B0B0;
+    --border-color: #33363B;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+.container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+section { padding: 80px 0; }
+.fade-in-element { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.fade-in-element.visible { opacity: 1; transform: translateY(0); }
+.btn { padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: inline-block; }
+.btn-primary { background-color: var(--primary-color); color: #FFFFFF; }
+.btn-primary:hover { background-color: #008c55; }
+.btn-secondary { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-light); }
+.btn-secondary:hover { background-color: var(--surface-color); color: #FFFFFF; }
+.navbar { background-color: rgba(18, 20, 23, 0.7); backdrop-filter: blur(10px); padding: 15px 0; position: sticky; width: 100%; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+.navbar .container { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 22px; font-weight: 700; }
+.logo span { color: var(--primary-color); }
+.nav-menu { display: flex; align-items: center; gap: 25px; }
+.nav-menu a { color: var(--text-light); text-decoration: none; font-weight: 600; }
+.nav-menu a:hover { color: #FFFFFF; }
+.nav-menu .btn { padding: 8px 16px; }
+.hero { min-height: 90vh; display: flex; align-items: center; text-align: center; background-image: radial-gradient(circle at 50% 30%, rgba(0, 176, 107, 0.15), transparent 50%); }
+.hero h1 { font-size: 64px; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+.hero p { font-size: 18px; color: var(--text-light); max-width: 650px; margin: 0 auto 40px auto; }
+.hero-cta { display: flex; justify-content: center; gap: 15px; }
+.hero-mockup { margin-top: 60px; }
+.hero-mockup img { max-width: 80%; height: auto; border-radius: 10px; border: 1px solid var(--border-color); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+.features h2 { text-align: center; font-size: 40px; margin-bottom: 50px; }
+.features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+.feature-item { background-color: var(--surface-color); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); }
+.feature-item i { font-size: 28px; color: var(--primary-color); margin-bottom: 15px; }
+.feature-item h3 { font-size: 18px; margin-bottom: 10px; }
+.feature-item p { color: var(--text-light); font-size: 14px; }
+.demo-section h2 { text-align: center; font-size: 40px; margin-bottom: 50px; }
+.demo-layout { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; }
+.demo-layout img { width: 100%; border-radius: 8px; }
+.demo-text h3 { font-size: 24px; margin-bottom: 15px; }
+.testimonials h2 { text-align: center; font-size: 40px; margin-bottom: 50px; }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.testimonial-card { background-color: var(--surface-color); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); }
+.testimonial-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.testimonial-header img { width: 50px; height: 50px; border-radius: 50%; }
+.testimonial-header .name { font-weight: 700; }
+.testimonial-header .status { font-size: 14px; color: var(--text-light); }
+.testimonial-card .quote { font-style: italic; color: var(--text-light); }
+.cta-section { background-image: linear-gradient(45deg, var(--bg-color), var(--header-color)); border-radius: 12px; padding: 60px; text-align: center; }
+.cta-section h2 { font-size: 32px; margin-bottom: 10px; }
+.cta-section p { color: var(--text-light); margin-bottom: 30px; }
+.footer { background-color: #0C0F1A; padding: 60px 0 30px 0; }
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 40px; }
+.footer-col h4 { font-size: 18px; margin-bottom: 20px; }
+.footer-col a { display: block; color: var(--text-light); text-decoration: none; margin-bottom: 10px; transition: color 0.3s; }
+.footer-col a:hover { color: #FFFFFF; }
+.footer-col .fa-brands { margin-right: 10px; width: 16px; text-align: center; }
+.footer-copyright { text-align: center; padding-top: 30px; border-top: 1px solid var(--border-color); font-size: 14px; color: var(--text-light); }
+@media (max-width: 768px) {
+    section { padding: 60px 0; }
+    .nav-menu { display: none; }
+    .hero h1 { font-size: 40px; }
+    .hero p { font-size: 16px; }
+    .features-grid, .demo-layout, .testimonials-grid, .footer-grid { grid-template-columns: 1fr; }
+}
