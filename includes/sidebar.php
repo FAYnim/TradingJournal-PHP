@@ -6,7 +6,7 @@
             <a href="#" id="nav-add" data-page="add-order"><i class="fas fa-plus-circle icon-left"></i> Tambah Order</a>
             <a href="#" id="nav-statistic" data-page="statistic"><i class="fas fa-chart-pie icon-left"></i> Statistik</a>
             <a href="#" id="nav-setup" data-page="setup"><i class="fas fa-cogs icon-left"></i> Setup</a>
-            <a href="#" id="nav-watchlist" data-page="setup"><i class="fas fa-eye icon-left"></i> Watchlist</a>
+            <a href="#" id="nav-watchlist" data-page="watchlist"><i class="fas fa-eye icon-left"></i> Watchlist</a>
         </nav>
         <div class="sidebar-footer">
             <a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt icon-left"></i> Logout</a>
